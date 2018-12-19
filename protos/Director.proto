@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package director;
+
+service Director {
+    rpc Link (LinkRequest) returns (LinkResponse) {};
+}
+
+message Station {
+    string id = 1;
+    string image = 2;
+}
+
+message LinkRequest {
+    repeated Station stations = 1;
+}
+
+message LinkResponse {
+    string state = 1;
+}

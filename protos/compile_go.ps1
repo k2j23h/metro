@@ -1,5 +1,5 @@
-$GO_OUT_DIR = "../Locolet/director"
+$GO_OUT_DIR = "../metro/"
 
 protoc.exe `
     --go_out="plugins=grpc:$GO_OUT_DIR" `
-    ./Director.proto
+    ./Metro.proto

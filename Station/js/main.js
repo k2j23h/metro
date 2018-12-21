@@ -1,18 +1,35 @@
-const grpc = require('grpc')
-const DirectorService = require('./pb/Director_grpc_pb')
-const DirectorMessage = require('./pb/Director_pb')
+const MetroMessage = require('./pb/Metro_pb')
 
 const Station = require('./CurrentStation')
 const app = require('./app')
 
 function main () {
-  let directorClient = new DirectorService.DirectorClient(
-    'localhost:50051',
-    grpc.credentials.createInsecure()
-  )
-  let station = new Station(directorClient)
+  let metroClient = require('./MetroClient')
+  let station = new Station(metroClient)
+  console.log(station.token)
 
-  app()
+  app(station)
+
+  let token = new MetroMessage.Token()
+  token.setId('lkjh')
+
+  let stream = metroClient.listen(token,
+    /**
+     * @typedef {import('./pb/Metro_pb').Signal} Signal
+     * @param {Signal} msg
+     */
+    (err, msg) => {
+      if (err) throw err
+      console.log('asdf')
+      console.log(msg.getMessage())
+    })
+
+  stream.on('data', (msg) => {
+    console.log(msg.getMessage())
+  })
+  stream.on('end', () => {
+    console.log('ended')
+  })
 }
 
 main()

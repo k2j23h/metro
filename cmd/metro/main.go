@@ -1,12 +1,11 @@
 package main
 
 import (
-	"context"
-	"log"
 	"net"
 
-	"./director"
+	"locomotes/metro"
 
+	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -14,15 +13,6 @@ import (
 const (
 	port = ":50051"
 )
-
-type server struct{}
-
-func (s *server) Link(ctx context.Context, in *director.LinkRequest) (*director.LinkResponse, error) {
-	for _, station := range in.Stations {
-		log.Println(station.Id)
-	}
-	return &director.LinkResponse{State: "asdf"}, nil
-}
 
 func main() {
 	lis, err := net.Listen("tcp", port)
@@ -32,9 +22,14 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	director.RegisterDirectorServer(s, &server{})
+	metro.RegisterMetroServer(s, &metro.ServerHandle{})
 
 	reflection.Register(s)
+
+	log.SetFormatter(&log.TextFormatter{
+		ForceColors: true,
+	})
+	log.Info("Starting GRPC server")
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}

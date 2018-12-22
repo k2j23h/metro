@@ -1,7 +1,7 @@
 const _ = require('lodash')
 const MetroMessage = require('../pb/Metro_pb')
 
-class Station {
+module.exports = class StationMsg {
   /**
    *
    * @param {string} image the image of destinated Station
@@ -29,5 +29,11 @@ class Station {
 
   toMessage () {
     return this.raw
+  }
+
+  static make ({
+    name, image
+  }) {
+    return (new StationMsg(image)).with(name).toMessage()
   }
 }

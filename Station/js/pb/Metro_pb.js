@@ -15,7 +15,6 @@ goog.exportSymbol('proto.metro.LinkRequest', null, global);
 goog.exportSymbol('proto.metro.Signal', null, global);
 goog.exportSymbol('proto.metro.Station', null, global);
 goog.exportSymbol('proto.metro.Status', null, global);
-goog.exportSymbol('proto.metro.StatusCode', null, global);
 goog.exportSymbol('proto.metro.Token', null, global);
 goog.exportSymbol('proto.metro.TransmitRequest', null, global);
 
@@ -414,7 +413,7 @@ proto.metro.Status.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {!proto.metro.StatusCode} */ (reader.readEnum());
+      var value = /** @type {number} */ (reader.readInt32());
       msg.setCode(value);
       break;
     default:
@@ -447,8 +446,8 @@ proto.metro.Status.prototype.serializeBinary = function() {
 proto.metro.Status.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
   f = message.getCode();
-  if (f !== 0.0) {
-    writer.writeEnum(
+  if (f !== 0) {
+    writer.writeInt32(
       1,
       f
     );
@@ -457,17 +456,17 @@ proto.metro.Status.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional StatusCode code = 1;
- * @return {!proto.metro.StatusCode}
+ * optional int32 code = 1;
+ * @return {number}
  */
 proto.metro.Status.prototype.getCode = function() {
-  return /** @type {!proto.metro.StatusCode} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 1, 0));
 };
 
 
-/** @param {!proto.metro.StatusCode} value */
+/** @param {number} value */
 proto.metro.Status.prototype.setCode = function(value) {
-  jspb.Message.setProto3EnumField(this, 1, value);
+  jspb.Message.setProto3IntField(this, 1, value);
 };
 
 
@@ -1089,13 +1088,5 @@ proto.metro.Signal.prototype.setMessage = function(value) {
   jspb.Message.setProto3StringField(this, 3, value);
 };
 
-
-/**
- * @enum {number}
- */
-proto.metro.StatusCode = {
-  FAIL: 0,
-  OK: 1
-};
 
 goog.object.extend(exports, proto.metro);

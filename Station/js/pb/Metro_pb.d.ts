@@ -48,8 +48,8 @@ export namespace Token {
 }
 
 export class Status extends jspb.Message {
-  getCode(): StatusCode;
-  setCode(value: StatusCode): void;
+  getCode(): number;
+  setCode(value: number): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Status.AsObject;
@@ -63,7 +63,7 @@ export class Status extends jspb.Message {
 
 export namespace Status {
   export type AsObject = {
-    code: StatusCode,
+    code: number,
   }
 }
 
@@ -151,10 +151,5 @@ export namespace Signal {
     station?: Station.AsObject,
     message: string,
   }
-}
-
-export enum StatusCode {
-  FAIL = 0,
-  OK = 1,
 }
 

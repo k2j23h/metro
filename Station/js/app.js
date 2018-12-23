@@ -1,18 +1,20 @@
-const CurrentStation = require('./CurrentStation')
-
 /**
- * @param {CurrentStation} station
+ * @param {import('./CurrentStation')} station
  */
-module.exports = (station) => {
-  station.towards({
-    'image': 'a1',
-    'name': 'qwer'
-  }, {
-    'image': 'b1',
-    'name': 'asfd'
-  }, {
-    'image': 'c1',
-    'name': 'zxcv'
-  })
+module.exports = async (station) => {
+  const something = {
+    name: 'something',
+    image: 'hello:0.1'
+  }
+
+  try {
+    await station.towards(something)
+  } catch (e) {
+    console.log(e)
+  }
   console.log('noop')
+
+  setTimeout(() => {
+    station.signal().to(something)
+  }, 1000)
 }

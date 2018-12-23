@@ -13,17 +13,17 @@ module.exports = class StationMsg {
 
     this.raw = new MetroMessage.Station()
     this.raw.setImage(image)
-  }
 
-  with = {
-    name: (name) => {
-      if (!_.isString(name)) {
-        throw new Error('name must be string type')
+    this.with = {
+      name: (name) => {
+        if (!_.isString(name)) {
+          throw new Error('name must be string type')
+        }
+
+        this.raw.setName(name)
+
+        return this
       }
-
-      this.raw.setName(name)
-
-      return this
     }
   }
 
@@ -34,6 +34,6 @@ module.exports = class StationMsg {
   static make ({
     name, image
   }) {
-    return (new StationMsg(image)).with(name).toMessage()
+    return (new StationMsg(image)).with.name(name).toMessage()
   }
 }

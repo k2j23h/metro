@@ -15,6 +15,11 @@ const (
 )
 
 func main() {
+	log.SetFormatter(&log.TextFormatter{
+		ForceColors: true,
+	})
+	metro.Init()
+
 	lis, err := net.Listen("tcp", port)
 
 	if err != nil {
@@ -25,10 +30,6 @@ func main() {
 	metro.RegisterMetroServer(s, &metro.ServerHandle{})
 
 	reflection.Register(s)
-
-	log.SetFormatter(&log.TextFormatter{
-		ForceColors: true,
-	})
 	log.Info("Starting GRPC server")
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)

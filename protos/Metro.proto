@@ -8,11 +8,6 @@ service Metro {
     rpc Listen (Token) returns (stream Signal) {};
 }
 
-enum StatusCode {
-    FAIL = 0;
-    OK = 1;
-}
-
 message Station {
     string name = 1;
     string image = 2;
@@ -23,7 +18,7 @@ message Token {
 }
 
 message Status {
-    StatusCode code = 1;
+    int32 code = 1;
 }
 
 message LinkRequest {

@@ -5,17 +5,18 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// DockerAPI is docker client
-var DockerAPI *client.Client
+// DckrCli is docker client
+var DckrCli *client.Client
 
 // Init initiates Metro
 func Init() {
-	cli, err := client.NewClientWithOpts(client.WithVersion("1.39"))
+	version := "1.39"
+	cli, err := client.NewClientWithOpts(client.WithVersion(version))
 	if err != nil {
 		panic(err)
 	}
-	DockerAPI = cli
-	log.Info("Docker client created.")
+	DckrCli = cli
+	log.Info("Docker client with version " + cli.ClientVersion() + " created")
 
-	_ = DockerAPI
+	_ = DckrCli
 }

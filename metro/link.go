@@ -14,7 +14,7 @@ func (h *ServerHandle) Link(ctx context.Context, in *LinkRequest) (*Status, erro
 	station := in.GetStation()
 	status := Status{Code: code.StatusOK}
 
-	res, err := DockerAPI.ContainerCreate(context.Background(), &container.Config{
+	res, err := DckrCli.ContainerCreate(context.Background(), &container.Config{
 		Image: "qwe",
 	}, nil, nil, "station.GetName()")
 	if err != nil {

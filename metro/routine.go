@@ -3,8 +3,8 @@ package metro
 var routines = make(map[string]map[string]*StationDescriptor)
 var cache = make(map[string]string)
 
-// Regist regists station to routine.
-func Regist(token TokenDescriptor, station *StationDescriptor) {
+// Register registers station to routine.
+func Register(token TokenDescriptor, station *StationDescriptor) {
 	id := station.containerID
 
 	routineID, ok := cache[token]

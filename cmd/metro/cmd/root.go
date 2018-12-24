@@ -16,11 +16,18 @@ package cmd
 
 import (
 	"fmt"
+	"net"
 	"os"
+	"strconv"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+)
+
+var (
+	serverIP   net.IP
+	serverPort uint16
 )
 
 var cfgFile string
@@ -60,6 +67,9 @@ func init() {
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	rootCmd.PersistentFlags().IPVarP(&serverIP, "address", "a", net.IPv4(0, 0, 0, 0), "IP address that the Metro server serving")
+	rootCmd.PersistentFlags().Uint16VarP(&serverPort, "port", "p", 50051, "Port number that the Metro server exposing")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -86,4 +96,8 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file:", viper.ConfigFileUsed())
 	}
+}
+
+func getServerAddress() string {
+	return serverIP.String() + ":" + strconv.Itoa(int(serverPort))
 }

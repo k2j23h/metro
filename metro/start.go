@@ -8,30 +8,29 @@ import (
 	"golang.org/x/net/context"
 )
 
-// Link connects two stations between caller and requested station
-func (h *ServerHandle) Link(ctx context.Context, in *LinkRequest) (*Status, error) {
-	token := in.GetToken().GetId()
+// Start creates entry point Station
+func (h *ServerHandle) Start(ctx context.Context, in *StartRequest) (*Status, error) {
 	station := in.GetStation()
 	status := Status{Code: code.StatusOK}
 
+	log.WithFields(log.Fields{
+		"name":  station.GetName(),
+		"image": station.GetImage(),
+	}).Info("Start is requested")
+
 	res, err := DckrCli.ContainerCreate(ctx, &container.Config{
-		Image: "qwe",
+		Image: station.Image,
 	}, nil, nil, station.GetName())
 	if err != nil {
 		log.Warn(err)
 		status.Code = code.StatusNotFound
 	}
 
-	_ = StationDescriptor{
+	register(res.ID, &StationDescriptor{
 		station.GetName(),
 		station.GetImage(),
 		res.ID,
-	}
-
-	log.WithFields(log.Fields{
-		"caller": token,
-		"image":  station.GetImage(),
-	}).Info("Link is requested")
+	})
 
 	return &status, nil
 }

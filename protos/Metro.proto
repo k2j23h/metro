@@ -3,6 +3,7 @@ syntax = "proto3";
 package metro;
 
 service Metro {
+    rpc Start (StartRequest) returns (Status) {};
     rpc Link (LinkRequest) returns (Status) {};
     rpc Transmit (TransmitRequest) returns (Status) {};
     rpc Listen (Token) returns (stream Signal) {};
@@ -19,6 +20,10 @@ message Token {
 
 message Status {
     int32 code = 1;
+}
+
+message StartRequest {
+    Station station = 2;
 }
 
 message LinkRequest {

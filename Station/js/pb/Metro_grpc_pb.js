@@ -26,6 +26,17 @@ function deserialize_metro_Signal(buffer_arg) {
   return Metro_pb.Signal.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
+function serialize_metro_StartRequest(arg) {
+  if (!(arg instanceof Metro_pb.StartRequest)) {
+    throw new Error('Expected argument of type metro.StartRequest');
+  }
+  return new Buffer(arg.serializeBinary());
+}
+
+function deserialize_metro_StartRequest(buffer_arg) {
+  return Metro_pb.StartRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_metro_Status(arg) {
   if (!(arg instanceof Metro_pb.Status)) {
     throw new Error('Expected argument of type metro.Status');
@@ -61,6 +72,17 @@ function deserialize_metro_TransmitRequest(buffer_arg) {
 
 
 var MetroService = exports.MetroService = {
+  start: {
+    path: '/metro.Metro/Start',
+    requestStream: false,
+    responseStream: false,
+    requestType: Metro_pb.StartRequest,
+    responseType: Metro_pb.Status,
+    requestSerialize: serialize_metro_StartRequest,
+    requestDeserialize: deserialize_metro_StartRequest,
+    responseSerialize: serialize_metro_Status,
+    responseDeserialize: deserialize_metro_Status,
+  },
   link: {
     path: '/metro.Metro/Link',
     requestStream: false,

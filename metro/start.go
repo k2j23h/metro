@@ -3,6 +3,7 @@ package metro
 import (
 	code "net/http"
 
+	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
@@ -26,11 +27,26 @@ func (h *ServerHandle) Start(ctx context.Context, in *StartRequest) (*Status, er
 		status.Code = code.StatusNotFound
 	}
 
+	log.WithFields(log.Fields{
+		"token": shortToken(res.ID),
+		"name":  station.GetName(),
+		"image": station.GetImage(),
+	}).Info("New station created")
+
 	register(res.ID, &StationDescriptor{
 		station.GetName(),
 		station.GetImage(),
 		res.ID,
 	})
+
+	// connection fail in station container
+	// TODO: init metro with network option and create container with same network
+	if err := DckrCli.ContainerStart(
+		context.Background(), res.ID,
+		types.ContainerStartOptions{},
+	); err != nil {
+		log.Fatal(err)
+	}
 
 	return &status, nil
 }

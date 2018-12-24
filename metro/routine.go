@@ -29,6 +29,7 @@ func register(token TokenDescriptor, station *StationDescriptor) {
 
 	_, ok = routines[rKey][sKey]
 	if !ok {
+		routines[rKey] = make(map[stationKey]bool)
 		routines[rKey][sKey] = true
 	} else {
 		log.WithFields(log.Fields{
@@ -46,7 +47,7 @@ func register(token TokenDescriptor, station *StationDescriptor) {
 	log.WithField("token", shortToken(token)).Info("New station registered")
 }
 
-// get retuen StationDescripor corresponding to the token.
+// get returns StationDescripor corresponding to the token.
 func get(token TokenDescriptor) *StationDescriptor {
 	sKey := token
 

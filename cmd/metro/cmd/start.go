@@ -49,7 +49,7 @@ var startCmd = &cobra.Command{
 		defer conn.Close()
 		cli := metro.NewMetroClient(conn)
 
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 		defer cancel()
 		res, err := cli.Start(ctx, &metro.StartRequest{
 			Station: &metro.Station{

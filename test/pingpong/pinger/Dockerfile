@@ -2,7 +2,9 @@ FROM node:8-alpine
 
 WORKDIR /usr/src/app
 
-ADD . .
+# Station/js will be provided by npm
+# perhaps...
+COPY ./temp/. .
 
 RUN ls && npm install
 

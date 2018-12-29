@@ -26,7 +26,7 @@ var serveCmd = &cobra.Command{
 	Short: "Serving Metro server",
 	Run: func(cmd *cobra.Command, args []string) {
 		metro.Serve(&metro.ServeOptions{
-			IP:   serverIP,
+			Host: serverHost,
 			Port: serverPort,
 		})
 	},

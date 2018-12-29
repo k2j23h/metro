@@ -12,17 +12,18 @@ import (
 
 // DckrCli is docker client
 var DckrCli *client.Client
+var serveOpts ServeOptions
 
 // ServeOptions holds parameters to serving a Metro server
 type ServeOptions struct {
-	IP   net.IP
+	Host string
 	Port uint16
-	asf  uint16
 }
 
 // Serve starts Metro server
 func Serve(opt *ServeOptions) {
-	addr := opt.getServerAddress()
+	serveOpts = *opt
+	addr := serveOpts.getServerAddress()
 	version := "1.39"
 
 	cli, err := client.NewClientWithOpts(client.WithVersion(version))
@@ -30,25 +31,33 @@ func Serve(opt *ServeOptions) {
 		panic(err)
 	}
 	DckrCli = cli
-	_ = DckrCli
-	log.Info("Docker client with version " + cli.ClientVersion() + " created")
+	log.WithFields(log.Fields{
+		"version": cli.ClientVersion(),
+	}).Info("the Docker client created")
+
+	updateInfo()
+	serveOptsFields := log.Fields{
+		"ID":   shortToken(metroContID),
+		"Name": metroContName,
+	}
+
+	log.WithFields(serveOptsFields).Info("the Metro server inspected")
 
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+		log.WithFields(serveOptsFields).Fatalf("failed to listen: %v", err)
 	}
 
 	s := grpc.NewServer()
 	RegisterMetroServer(s, &ServerHandle{})
 
 	reflection.Register(s)
-	log.Info("Starting GRPC server on " + addr)
+	log.WithFields(serveOptsFields).Info("starting the GRPC server")
 	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+		log.WithFields(serveOptsFields).Fatalf("failed to serve: %v", err)
 	}
-	log.Info("asdf")
 }
 
 func (opts *ServeOptions) getServerAddress() string {
-	return opts.IP.String() + ":" + strconv.Itoa(int(opts.Port))
+	return opts.Host + ":" + strconv.Itoa(int(opts.Port))
 }

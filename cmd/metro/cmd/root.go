@@ -16,7 +16,6 @@ package cmd
 
 import (
 	"fmt"
-	"net"
 	"os"
 	"strconv"
 
@@ -26,7 +25,7 @@ import (
 )
 
 var (
-	serverIP   net.IP
+	serverHost string
 	serverPort uint16
 )
 
@@ -68,8 +67,8 @@ func init() {
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
-	rootCmd.PersistentFlags().IPVarP(&serverIP, "address", "a", net.IPv4(0, 0, 0, 0), "IP address that the Metro server serving")
-	rootCmd.PersistentFlags().Uint16VarP(&serverPort, "port", "p", 50051, "Port number that the Metro server exposing")
+	rootCmd.Flags().StringVarP(&serverHost, "host", "h", "0.0.0.0", "Host string or IP that the Metro server serving")
+	rootCmd.Flags().Uint16VarP(&serverPort, "port", "p", 50051, "Port number that the Metro server exposing")
 }
 
 // initConfig reads in config file and ENV variables if set.
@@ -99,5 +98,5 @@ func initConfig() {
 }
 
 func getServerAddress() string {
-	return serverIP.String() + ":" + strconv.Itoa(int(serverPort))
+	return serverHost + ":" + strconv.Itoa(int(serverPort))
 }

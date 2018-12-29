@@ -2,6 +2,7 @@ package metro
 
 import (
 	code "net/http"
+	"strconv"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
@@ -21,10 +22,17 @@ func (h *ServerHandle) Start(ctx context.Context, in *StartRequest) (*Status, er
 
 	res, err := DckrCli.ContainerCreate(ctx, &container.Config{
 		Image: station.Image,
-	}, nil, nil, station.GetName())
+		Env: []string{
+			"LOCO_METRO_SERVER_HOST=" + metroContName,
+			"LOCO_METRO_SERVER_PORT=" + strconv.Itoa(int(serveOpts.Port)),
+		},
+	}, &container.HostConfig{
+		NetworkMode: "metro",
+	}, nil, station.GetName())
 	if err != nil {
 		log.Warn(err)
 		status.Code = code.StatusNotFound
+		return &status, nil
 	}
 
 	log.WithFields(log.Fields{
@@ -39,8 +47,6 @@ func (h *ServerHandle) Start(ctx context.Context, in *StartRequest) (*Status, er
 		res.ID,
 	})
 
-	// connection fail in station container
-	// TODO: init metro with network option and create container with same network
 	if err := DckrCli.ContainerStart(
 		context.Background(), res.ID,
 		types.ContainerStartOptions{},

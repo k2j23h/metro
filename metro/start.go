@@ -39,7 +39,7 @@ func (h *ServerHandle) Start(ctx context.Context, in *StartRequest) (*Status, er
 		"token": shortToken(res.ID),
 		"name":  station.GetName(),
 		"image": station.GetImage(),
-	}).Info("New station created")
+	}).Info("new station created")
 
 	register(res.ID, &StationDescriptor{
 		station.GetName(),
@@ -53,6 +53,12 @@ func (h *ServerHandle) Start(ctx context.Context, in *StartRequest) (*Status, er
 	); err != nil {
 		log.Fatal(err)
 	}
+
+	log.WithFields(log.Fields{
+		"token": shortToken(res.ID),
+		"name":  station.GetName(),
+		"image": station.GetImage(),
+	}).Info("new station started")
 
 	return &status, nil
 }

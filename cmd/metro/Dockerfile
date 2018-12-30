@@ -7,7 +7,7 @@ WORKDIR /go/src/locomotes/cmd/metro
 
 # metro loco-metro will provided by github
 # perhaps...
-COPY ./deps/. /go/src/.
+COPY ./temp/. /go/src/.
 COPY ./main.go ./main.go
 COPY ./cmd ./cmd
 

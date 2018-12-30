@@ -1,6 +1,8 @@
 package metro
 
 import (
+	"errors"
+
 	log "github.com/sirupsen/logrus"
 )
 
@@ -15,9 +17,10 @@ type stationKey = string
 
 var routines = make(map[routineKey]map[stationKey]bool)
 var stationBodies = make(map[stationKey]*stationBody)
+var stationNames = make(map[string]bool)
 
 // register registers station to routine.
-func register(token TokenDescriptor, station *StationDescriptor) {
+func register(token string, station *StationDescriptor) {
 	sKey := station.containerID
 	rKey := token
 
@@ -33,8 +36,18 @@ func register(token TokenDescriptor, station *StationDescriptor) {
 		routines[rKey][sKey] = true
 	} else {
 		log.WithFields(log.Fields{
-			"caller": shortToken(token),
-		}).Warn("Already registered station")
+			"token": shortToken(token),
+		}).Warn("already registered station")
+		return
+	}
+
+	if _, ok := stationNames[station.name]; station.name != "" && !ok {
+		stationNames[station.name] = true
+	} else if ok {
+		log.WithFields(log.Fields{
+			"token": shortToken(token),
+			"name":  station.name,
+		}).Warn("already registered name")
 		return
 	}
 
@@ -44,16 +57,30 @@ func register(token TokenDescriptor, station *StationDescriptor) {
 		transmit:   make(chan string, 10),
 	}
 
-	log.WithField("token", shortToken(token)).Info("New station registered")
+	log.WithField("token", shortToken(token)).Info("new station registered")
 }
 
-// get returns StationDescripor corresponding to the token.
-func get(token TokenDescriptor) *StationDescriptor {
-	sKey := token
+// getStBody returns stationBody corresponding to the token.
+func getStBody(token *Token) (*stationBody, error) {
+	sKey := token.GetId()
 
 	if sBody, ok := stationBodies[sKey]; ok {
-		return sBody.descriptor
+		return sBody, nil
 	}
 
-	return nil
+	return nil, errors.New("unavailable token " + token.toShort())
+}
+
+func (station *Station) isNameRegistered() bool {
+	sName := station.GetName()
+
+	if sName == "" {
+		return false
+	}
+
+	if _, ok := stationNames[sName]; ok {
+		return true
+	}
+
+	return false
 }

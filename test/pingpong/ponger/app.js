@@ -4,7 +4,7 @@
 module.exports = async (station)=>{
     const pinger = {
         name: 'pinger',
-        image: 'lesomnus/pinger:latest'
+        image: 'pinger:latest'
     }
     station.towards(pinger)
 
@@ -13,12 +13,12 @@ module.exports = async (station)=>{
         pong()
     })
 
-    pong()
-}
+    let pong = ()=>{
+        console.log('pong')
+        setTimeout(() => {
+            station.signal('ponged').to(pinger)
+        }, 1000);
+    }
 
-function pong(){
-    console.log('pong')
-    setTimeout(() => {
-        station.signal('ponged').to(ponger)
-    }, 1000);
+    pong()
 }

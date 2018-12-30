@@ -9,15 +9,15 @@ deps=$(echo $deps | sed 's/ /,/g')
 IFS=',' read -r -a deps <<< "$deps"
 for element in "${deps[@]}"
 do
-    mkdir -p ./deps/$element/
-    rsync -a $go_path/src/$element/ ./deps/$element/
+    mkdir -p ./temp/$element/
+    rsync -a $go_path/src/$element/ ./temp/$element/
     echo $element" done"
 done
 
-mkdir -p ./deps/locomotes/metro
-rsync -a $loco_metro_cli_path/ ./deps/locomotes/metro
+mkdir -p ./temp/locomotes/metro
+rsync -a $loco_metro_cli_path/ ./temp/locomotes/metro
 
 docker build \
     -t loco-metro:latest .
 
-rm -rf ./deps/
+rm -rf ./temp/

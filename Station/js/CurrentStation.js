@@ -28,11 +28,12 @@ const token = module.exports.token = (() => {
      * 0::/system.slice/containerd.service
      */
     const cgroup = fs.readFileSync('/proc/self/cgroup', 'utf-8')
-
-    rst = _.chain(cgroup).find(_.includes, 'docker').value().split('docker/')[1]
+    rst = _.chain(cgroup).split('\n').find(_.includes, 'docker').value().split('docker/')[1]
     if (rst.length !== 64) throw Error('Failed to parsing')
-  } catch (e) { rst = null }
-
+  } catch (e) {
+    rst = null
+  }
+  
   rst = rst || 'zz' + require('crypto').randomBytes(31).toString('hex')
 
   console.info(`token is ${rst}`)
@@ -45,7 +46,7 @@ const token = module.exports.token = (() => {
  */
 const tokenMsg = ((token) => {
   let msg = new MetroMessage.Token()
-  msg.setId = token
+  msg.setId(token)
   return msg
 })(token)
 
@@ -68,7 +69,7 @@ module.exports.towards = async (...destinations) => {
     let station = StationMsg.make(destination)
 
     let req = new MetroMessage.LinkRequest()
-    req.setToken((new MetroMessage.Token()).setId('tokenid' + Date.now()))
+    req.setToken(tokenMsg)
     req.setStation(station)
     requests.push(MetroClient.link().sendMessage(req))
   }
@@ -87,7 +88,7 @@ module.exports.towards = async (...destinations) => {
     }
   }
 
-  if (notFounds.length !== 0) throw new Error('No such image: ' + notFounds)
+  if (notFounds.length > 0) throw new Error('No such image: ' + notFounds)
 }
 
 /**

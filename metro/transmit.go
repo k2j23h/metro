@@ -9,13 +9,23 @@ import (
 
 // Transmit messages to other server or Metro through Metro server steram
 func (h *ServerHandle) Transmit(ctx context.Context, in *TransmitRequest) (*Status, error) {
-	token := in.GetToken().GetId()
+	status := &Status{Code: code.StatusOK}
+	token := in.GetToken()
 	station := in.GetStation()
 
 	log.WithFields(log.Fields{
-		"caller": token,
-		"image":  station.GetImage(),
+		"token": token.toShort(),
+		"image": station.GetImage(),
 	}).Info("Transmit is requested")
 
-	return &Status{Code: code.StatusOK}, nil
+	dest, err := getStBody(token)
+	if err != nil {
+		log.WithField("token", token.toShort())
+		status.Code = code.StatusNotFound
+		return status, nil
+	}
+
+	dest.transmit <- in.GetMessage()
+
+	return status, nil
 }

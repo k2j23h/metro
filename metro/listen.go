@@ -10,7 +10,7 @@ import (
 func (h *ServerHandle) Listen(token *Token, stream Metro_ListenServer) error {
 
 	log.WithFields(log.Fields{
-		"caller": token.GetId(),
+		"token": token.toShort(),
 	}).Info("Listen is requested")
 
 	for i := 1; i < 5; i++ {

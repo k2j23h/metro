@@ -36,25 +36,29 @@ func Serve(opt *ServeOptions) {
 	}).Info("the Docker client created")
 
 	updateInfo()
-	serveOptsFields := log.Fields{
+
+	log.WithFields(log.Fields{
 		"ID":   shortToken(metroContID),
 		"Name": metroContName,
-	}
+	}).Info("the Metro server inspected")
 
-	log.WithFields(serveOptsFields).Info("the Metro server inspected")
+	serveOptFields := log.Fields{
+		"Host": serveOpts.Host,
+		"Port": serveOpts.Port,
+	}
 
 	lis, err := net.Listen("tcp", addr)
 	if err != nil {
-		log.WithFields(serveOptsFields).Fatalf("failed to listen: %v", err)
+		log.WithFields(serveOptFields).Fatalf("failed to listen: %v", err)
 	}
 
 	s := grpc.NewServer()
 	RegisterMetroServer(s, &ServerHandle{})
 
 	reflection.Register(s)
-	log.WithFields(serveOptsFields).Info("starting the GRPC server")
+	log.WithFields(serveOptFields).Info("starting the GRPC server")
 	if err := s.Serve(lis); err != nil {
-		log.WithFields(serveOptsFields).Fatalf("failed to serve: %v", err)
+		log.WithFields(serveOptFields).Fatalf("failed to serve: %v", err)
 	}
 }
 

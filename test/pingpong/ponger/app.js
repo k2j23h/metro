@@ -8,8 +8,14 @@ module.exports = async (station)=>{
     }
     station.towards(pinger)
 
-    station.on('signal', (station)=>{
-        if(station != pinger) return;
+    let cnt = 0;
+
+    station.on('signal', (from, msg)=>{
+        console.log(`${msg} from ${from.name}`)
+        if(++cnt == 3){
+            station.close()
+            return
+        } 
         pong()
     })
 

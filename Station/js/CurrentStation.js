@@ -33,7 +33,7 @@ const token = module.exports.token = (() => {
   } catch (e) {
     rst = null
   }
-  
+
   rst = rst || 'zz' + require('crypto').randomBytes(31).toString('hex')
 
   console.info(`token is ${rst}`)
@@ -50,17 +50,28 @@ const tokenMsg = ((token) => {
   return msg
 })(token)
 
+let listenStream = null
 const streamEventEmitter = new EventEmitter();
+
 (() => {
-  let stream = MetroClient.listen(tokenMsg)
-  stream.on('data', res => {
-    console.log('ㄱㄷ네ㅐㅜㄴㄷ')
-  })
+  listenStream = MetroClient.listen(tokenMsg)
+
+  listenStream.on('data',
+    /** @param {import('./pb/Metro_pb').Signal} res */
+    res => streamEventEmitter.emit('signal', {
+      name: res.getStation().getName(),
+      image: res.getStation().getImage()
+    }, res.getMessage())
+  )
 })()
 
 /**
- * Notify future reachable Station to Metro Server
- * If Metro Server receives this notifying, it starts corresponding container
+ * @summary Towards notifies future reachable station to the Metro server.
+ * @description
+ * If the Metro Server receives this notifying, it starts corresponding container.
+ * If corresponding container is already exists, the Metro server ignore it.
+ * The Metro server distinguish stations using its name.
+ * If the name field empty, the Metro server (actually docker deamon) will give random name.
  * @param {...Station} destinations
  */
 module.exports.towards = async (...destinations) => {
@@ -82,6 +93,7 @@ module.exports.towards = async (...destinations) => {
     switch (code) {
       case 200: continue
       case 404: notFounds.push(destinations[index].image); break
+      case 409: continue // already created
       default:
         msg = 'Responded unknown error: ' + code
         throw new Error(msg)
@@ -92,10 +104,10 @@ module.exports.towards = async (...destinations) => {
 }
 
 /**
- * @summary Write message to other Station.
+ * @summary Signal write message to other Station.
  * @description
  * It just writing message but not send it yet.
- * If you want to send it, specify destenated station using returned "to" method.
+ * You can send it by specifying the destenated station using returned "to" method.
  * @param {string} message
  */
 module.exports.signal = (message) => {
@@ -134,4 +146,15 @@ module.exports.signal = (message) => {
   }
 }
 
-module.exports.on = streamEventEmitter.on
+/**
+ * @summary Close stops listening signals from Metro server.
+ * @description
+ * CAUTION: The Metro server will trying to stop container
+ */
+module.exports.close = () => {
+  console.log('closing...')
+}
+
+module.exports.on = (...args) => {
+  streamEventEmitter.on(...args)
+}

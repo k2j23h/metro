@@ -22,7 +22,6 @@ func (h *ServerHandle) Link(ctx context.Context, in *LinkRequest) (*Status, erro
 	}).Info("Link is requested")
 
 	if ok := station.isNameRegistered(); ok {
-		status.Code = code.StatusConflict
 		return &status, nil
 	}
 

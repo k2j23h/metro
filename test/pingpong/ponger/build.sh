@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 go_path=$(go env | grep -m1 GOPATH= | cut -d "\"" -f 2)
 loco_station_path=$go_path/src/locomotes/station/js/
 

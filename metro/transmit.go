@@ -18,14 +18,26 @@ func (h *ServerHandle) Transmit(ctx context.Context, in *TransmitRequest) (*Stat
 		"image": station.GetImage(),
 	}).Info("Transmit is requested")
 
-	dest, err := getStBody(token)
-	if err != nil {
-		log.WithField("token", token.toShort())
+	if dest, err := station.getStBody(); err == nil {
+		orgn, _ := token.getStBody()
+
+		dest.transmit <- Signal{
+			Station: orgn.descriptor.toStation(),
+			Message: in.GetMessage(),
+		}
+
+		log.WithFields(log.Fields{
+			"token": token.toShort(),
+			"dest":  dest.descriptor.name,
+			"msg":   in.GetMessage(),
+		}).Info("signal transmited")
+	} else {
+		log.WithFields(log.Fields{
+			"name": station.GetName(),
+		}).Warn(err)
 		status.Code = code.StatusNotFound
 		return status, nil
 	}
-
-	dest.transmit <- in.GetMessage()
 
 	return status, nil
 }

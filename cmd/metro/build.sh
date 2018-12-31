@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 graper='github\.\|google\.\|golang\.\|gopkg\.'
 go_path=$(go env | grep -m1 GOPATH= | cut -d "\"" -f 2)
 loco_metro_cli_path=$go_path/src/locomotes/metro/
@@ -21,3 +23,4 @@ docker build \
     -t loco-metro:latest .
 
 rm -rf ./temp/
+docker rmi $(docker images -f dangling=true -q)

@@ -1,5 +1,5 @@
 {
     "eslint.workingDirectories": [
-        "./station/js/"
+        "./station/node/"
     ]
 }

@@ -32,11 +32,12 @@ func (h *ServerHandle) Link(ctx context.Context, in *LinkRequest) (*Status, erro
 			"LOCO_METRO_SERVER_PORT=" + strconv.Itoa(int(serveOpts.Port)),
 		},
 	}, &container.HostConfig{
-		NetworkMode: "metro",
+		NetworkMode: metroContNetMode,
 	}, nil, station.GetName())
 	if err != nil {
 		log.Warn(err)
 		status.Code = code.StatusNotFound
+		return &status, nil
 	}
 
 	log.WithFields(log.Fields{
@@ -45,7 +46,7 @@ func (h *ServerHandle) Link(ctx context.Context, in *LinkRequest) (*Status, erro
 		"image": station.GetImage(),
 	}).Info("new station created")
 
-	register(res.ID, &StationDescriptor{
+	register(&StationDescriptor{
 		station.GetName(),
 		station.GetImage(),
 		res.ID,

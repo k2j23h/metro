@@ -12,11 +12,11 @@ module.exports = async (station)=>{
 
     station.on('signal', (from, msg)=>{
         console.log(`${msg} from ${from.name}`)
+        pong()
         if(++cnt == 3){
             station.close()
             return
         } 
-        pong()
     })
 
     let pong = ()=>{
@@ -25,6 +25,4 @@ module.exports = async (station)=>{
             station.signal('ponged').to(pinger)
         }, 1000);
     }
-
-    pong()
 }

@@ -8,14 +8,16 @@ import (
 	"os"
 	"strings"
 
+	"github.com/docker/docker/api/types/container"
 	log "github.com/sirupsen/logrus"
 	context "golang.org/x/net/context"
 )
 
 var (
-	metroContID   string
-	isMetroInCont bool
-	metroContName string
+	metroContID      string
+	metroContName    string
+	metroContNetMode container.NetworkMode
+	isMetroInCont    bool
 )
 
 func updateInfo() {
@@ -51,5 +53,6 @@ func updateInfo() {
 			log.Fatalf("Failed to inspect Metro container: %v", err)
 		}
 		metroContName = info.Name[1:]
+		metroContNetMode = info.HostConfig.NetworkMode
 	}
 }

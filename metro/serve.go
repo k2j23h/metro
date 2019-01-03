@@ -55,6 +55,8 @@ func Serve(opt *ServeOptions) {
 	s := grpc.NewServer()
 	RegisterMetroServer(s, &ServerHandle{})
 
+	go autoUnregister()
+
 	reflection.Register(s)
 	log.WithFields(serveOptFields).Info("starting the GRPC server")
 	if err := s.Serve(lis); err != nil {

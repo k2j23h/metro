@@ -1,6 +1,7 @@
 const fs = require('fs')
 const EventEmitter = require('events')
 const _ = require('lodash')
+const grpc = require('grpc')
 
 /**
  * @typedef {import('./commonTypes').Station} Station
@@ -9,6 +10,8 @@ const _ = require('lodash')
 const MetroMessage = require('./pb/Metro_pb')
 const MetroClient = require('./MetroClient')
 const StationMsg = require('./MessageBuilder/Station')
+
+let isClosed = false
 
 /**
  * @summary The token required to request to the Metro Server.
@@ -63,6 +66,15 @@ const streamEventEmitter = new EventEmitter();
       image: res.getStation().getImage()
     }, res.getMessage())
   )
+
+  listenStream.on('error', err => {
+    if (err && err.code === grpc.status.CANCELLED) return
+    throw err
+  })
+
+  listenStream.on('end', () => {
+    close()
+  })
 })()
 
 /**
@@ -151,8 +163,11 @@ module.exports.signal = (message) => {
  * @description
  * CAUTION: The Metro server will trying to stop container
  */
-module.exports.close = () => {
-  console.log('closing...')
+let close = module.exports.close = () => {
+  if (isClosed) return
+  isClosed = true
+
+  listenStream.cancel()
 }
 
 module.exports.on = (...args) => {

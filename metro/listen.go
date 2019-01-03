@@ -34,16 +34,6 @@ func (h *ServerHandle) Listen(token *Token, stream Metro_ListenServer) error {
 		}
 	}()
 
-	// for i := 1; i < 5; i++ {
-	// 	stream.Send(&Signal{
-	// 		Station: &Station{
-	// 			Name:  "zxvc",
-	// 			Image: "qwer",
-	// 		},
-	// 		Message: strconv.Itoa(i),
-	// 	})
-	// }
-
 	<-stream.Context().Done()
 	return nil
 }

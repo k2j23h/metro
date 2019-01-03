@@ -7,7 +7,7 @@ console.log(`host of metro server is ${process.env.LOCO_METRO_SERVER_HOST}`)
 console.log(`port of metro server is ${process.env.LOCO_METRO_SERVER_PORT}`)
 
 let cli = new MetroService.MetroClient(
- `${process.env.LOCO_METRO_SERVER_HOST}:${process.env.LOCO_METRO_SERVER_PORT}`,
+  `${process.env.LOCO_METRO_SERVER_HOST}:${process.env.LOCO_METRO_SERVER_PORT}`,
   grpc.credentials.createInsecure()
 )
 // require('grpc-promise').promisifyAll(cli)

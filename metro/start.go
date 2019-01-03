@@ -27,7 +27,7 @@ func (h *ServerHandle) Start(ctx context.Context, in *StartRequest) (*Status, er
 			"LOCO_METRO_SERVER_PORT=" + strconv.Itoa(int(serveOpts.Port)),
 		},
 	}, &container.HostConfig{
-		NetworkMode: "metro",
+		NetworkMode: metroContNetMode,
 	}, nil, station.GetName())
 	if err != nil {
 		log.Warn(err)
@@ -41,7 +41,7 @@ func (h *ServerHandle) Start(ctx context.Context, in *StartRequest) (*Status, er
 		"image": station.GetImage(),
 	}).Info("new station created")
 
-	register(res.ID, &StationDescriptor{
+	register(&StationDescriptor{
 		station.GetName(),
 		station.GetImage(),
 		res.ID,

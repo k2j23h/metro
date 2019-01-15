@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 
+base_path=$(dirname $0)
+
 docker build \
-    -t loco-node8-station:latest .
+    -t loco-station-node8:latest $base_path/.

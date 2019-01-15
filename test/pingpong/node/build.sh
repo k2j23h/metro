@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-./pinger/build.sh >> pinger.log &
-./ponger/build.sh >> ponger.log &
+base_path=$(dirname $0)
+
+$base_path/pinger/build.sh >> $base_path/pinger.log &
+$base_path/ponger/build.sh >> $base_path/ponger.log &
 
 wait

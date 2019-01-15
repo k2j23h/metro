@@ -1,4 +1,4 @@
 package metro
 
-// ServerHandle id handler of GRPC MetroServer
+// ServerHandle is handl of GRPC MetroServer
 type ServerHandle struct{}

@@ -40,17 +40,10 @@ module.exports = class Station {
       req.setSrc(this._station)
       req.setDst(dst)
 
-      reqs.push(MetroClient.link().sendMessage(req))
+      reqs.push(MetroClient.link().sendMessage(req).catch(_.noop))
     }
 
-    let reses = []
-    try {
-      reses = await Promise.all(reqs)
-    } catch (e) {
-      throw e
-    }
-
-    for (let [i, res] of reses) {
+    for (let [i, res] of await Promise.all(reqs).catch(_.noop)) {
       const code = res.getCode()
       switch (code) {
         case 200: break
@@ -89,17 +82,17 @@ module.exports = class Station {
         req.setDst(dst)
         req.setMessage(msg)
 
-        reqs.push(MetroClient.transmit().sendMessage(req))
+        reqs.push(MetroClient.transmit().sendMessage(req).catch(_.noop))
       }
 
-      let reses = []
-      try {
-        reses = await Promise.all(reqs)
-      } catch (e) {
-        throw e
-      }
+      // let reses = []
+      // try {
+      //   reses =
+      // } catch (e) {
+      //   throw e
+      // }
 
-      for (let [i, res] of reses) {
+      for (let [i, res] of await Promise.all(reqs).catch(_.noop)) {
         const code = res.getCode()
         switch (code) {
           case 200: break

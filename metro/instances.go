@@ -72,15 +72,18 @@ func newInstance(desc *instDesc) error {
 
 	pool[desc.image] = instBody{transmit: make(chan Signal, 1)}
 
-	contID, err := createInst(desc.image)
+	go func() {
+		contID, err := createInst(desc.image)
 
-	if err != nil {
-		return err
-	}
+		if err != nil {
+			delete(pool, desc.image)
+			return
+		}
 
-	body, _ := pool[desc.image]
-	body.contID = contID
-	containers[contID] = *desc
+		body, _ := pool[desc.image]
+		body.contID = contID
+		containers[contID] = *desc
+	}()
 
 	return nil
 }

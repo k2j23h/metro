@@ -58,7 +58,7 @@ func (h *ServerHandle) Transmit(ctx context.Context, in *TransmitRequest) (*Stat
 	logger.Info("Transmit is requested")
 
 	dstDesc.transmit(Signal{
-		Src:     dstSt,
+		Src:     srcSt,
 		Dst:     dstSt,
 		Message: in.GetMessage(),
 		Control: Signal_MESSAGE,

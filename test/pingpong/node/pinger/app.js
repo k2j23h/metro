@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 /**
  * @param {import('../../../station/js/CurrentStation')} station
  */
@@ -6,7 +8,7 @@ module.exports = async (station)=>{
         name: 'ponger',
         image: 'ponger:latest'
     }
-    station.towards(ponger)
+    station.towards(ponger).catch(_.noop)
 
     let cnt = 0;
 
@@ -22,7 +24,7 @@ module.exports = async (station)=>{
     let ping = ()=>{
         console.log('ping')
         setTimeout(() => {
-            station.signal('pinged').to(ponger)
+            station.signal('pinged').to(ponger).catch(_.noop)
         }, 1000);
     }
 

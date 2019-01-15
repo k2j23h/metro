@@ -23,4 +23,3 @@ docker build \
     -t loco-metro:latest .
 
 rm -rf ./temp/
-docker rmi $(docker images -f dangling=true -q)

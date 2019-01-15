@@ -33,7 +33,7 @@ function main () {
       if (_.isNil(emitter)) {
         let station;
         ({ station, emitter } = createStation(flowID, dstName))
-        app(station)
+        app(station).catch(_.noop)
         console.info('app started')
         stations.set(dstKey, emitter)
       }

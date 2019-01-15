@@ -17,6 +17,7 @@ package cmd
 import (
 	"context"
 	"errors"
+	"strings"
 	"time"
 
 	"locomotes/metro"
@@ -26,7 +27,9 @@ import (
 	"google.golang.org/grpc"
 )
 
-var stationName string
+var (
+	username string
+)
 
 // startCmd represents the start command
 var startCmd = &cobra.Command{
@@ -40,7 +43,9 @@ var startCmd = &cobra.Command{
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		image := args[0]
+		s := strings.Split(args[0], "~")
+		image := s[0]
+		name := s[1]
 
 		conn, err := grpc.Dial(getServerAddress(), grpc.WithInsecure())
 		if err != nil {
@@ -53,9 +58,10 @@ var startCmd = &cobra.Command{
 		defer cancel()
 		res, err := cli.Start(ctx, &metro.StartRequest{
 			Station: &metro.Station{
+				Name:  name,
 				Image: image,
-				Name:  stationName,
 			},
+			UserID: username,
 		})
 		if err != nil {
 			log.Fatalf("Failed to start: %v", err)
@@ -64,13 +70,13 @@ var startCmd = &cobra.Command{
 		switch code := res.GetCode(); code {
 		case 200:
 			log.WithFields(log.Fields{
-				"name":  stationName,
+				"name":  name,
 				"image": image,
 			}).Info("Started new entry point Station")
 		case 404:
 			log.WithField("image", image).Warn("No such image")
 		default:
-			log.WithField("code", code).Warn("Reponded unkown error")
+			log.WithField("code", code).Warn("Responded unkown error")
 		}
 	},
 }
@@ -78,5 +84,5 @@ var startCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(startCmd)
 
-	startCmd.Flags().StringVarP(&stationName, "name", "n", "", "the name of station")
+	startCmd.Flags().StringVarP(&username, "user", "u", "metro", "username")
 }

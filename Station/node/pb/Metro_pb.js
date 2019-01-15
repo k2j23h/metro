@@ -13,6 +13,7 @@ var global = Function('return this')();
 
 goog.exportSymbol('proto.metro.LinkRequest', null, global);
 goog.exportSymbol('proto.metro.Signal', null, global);
+goog.exportSymbol('proto.metro.Signal.Control', null, global);
 goog.exportSymbol('proto.metro.StartRequest', null, global);
 goog.exportSymbol('proto.metro.Station', null, global);
 goog.exportSymbol('proto.metro.Status', null, global);
@@ -65,8 +66,9 @@ proto.metro.Station.prototype.toObject = function(opt_includeInstance) {
  */
 proto.metro.Station.toObject = function(includeInstance, msg) {
   var f, obj = {
-    name: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    image: jspb.Message.getFieldWithDefault(msg, 2, "")
+    id: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    name: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    image: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -105,9 +107,13 @@ proto.metro.Station.deserializeBinaryFromReader = function(msg, reader) {
     switch (field) {
     case 1:
       var value = /** @type {string} */ (reader.readString());
-      msg.setName(value);
+      msg.setId(value);
       break;
     case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setName(value);
+      break;
+    case 3:
       var value = /** @type {string} */ (reader.readString());
       msg.setImage(value);
       break;
@@ -140,17 +146,24 @@ proto.metro.Station.prototype.serializeBinary = function() {
  */
 proto.metro.Station.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getName();
+  f = message.getId();
   if (f.length > 0) {
     writer.writeString(
       1,
       f
     );
   }
-  f = message.getImage();
+  f = message.getName();
   if (f.length > 0) {
     writer.writeString(
       2,
+      f
+    );
+  }
+  f = message.getImage();
+  if (f.length > 0) {
+    writer.writeString(
+      3,
       f
     );
   }
@@ -158,32 +171,47 @@ proto.metro.Station.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional string name = 1;
+ * optional string id = 1;
  * @return {string}
  */
-proto.metro.Station.prototype.getName = function() {
+proto.metro.Station.prototype.getId = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /** @param {string} value */
-proto.metro.Station.prototype.setName = function(value) {
+proto.metro.Station.prototype.setId = function(value) {
   jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
 /**
- * optional string image = 2;
+ * optional string name = 2;
  * @return {string}
  */
-proto.metro.Station.prototype.getImage = function() {
+proto.metro.Station.prototype.getName = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /** @param {string} value */
-proto.metro.Station.prototype.setImage = function(value) {
+proto.metro.Station.prototype.setName = function(value) {
   jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional string image = 3;
+ * @return {string}
+ */
+proto.metro.Station.prototype.getImage = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/** @param {string} value */
+proto.metro.Station.prototype.setImage = function(value) {
+  jspb.Message.setProto3StringField(this, 3, value);
 };
 
 
@@ -518,7 +546,8 @@ proto.metro.StartRequest.prototype.toObject = function(opt_includeInstance) {
  */
 proto.metro.StartRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    station: (f = msg.getStation()) && proto.metro.Station.toObject(includeInstance, f)
+    station: (f = msg.getStation()) && proto.metro.Station.toObject(includeInstance, f),
+    userid: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -560,6 +589,10 @@ proto.metro.StartRequest.deserializeBinaryFromReader = function(msg, reader) {
       reader.readMessage(value,proto.metro.Station.deserializeBinaryFromReader);
       msg.setStation(value);
       break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setUserid(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -597,6 +630,13 @@ proto.metro.StartRequest.serializeBinaryToWriter = function(message, writer) {
       proto.metro.Station.serializeBinaryToWriter
     );
   }
+  f = message.getUserid();
+  if (f.length > 0) {
+    writer.writeString(
+      3,
+      f
+    );
+  }
 };
 
 
@@ -627,6 +667,21 @@ proto.metro.StartRequest.prototype.clearStation = function() {
  */
 proto.metro.StartRequest.prototype.hasStation = function() {
   return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional string userID = 3;
+ * @return {string}
+ */
+proto.metro.StartRequest.prototype.getUserid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/** @param {string} value */
+proto.metro.StartRequest.prototype.setUserid = function(value) {
+  jspb.Message.setProto3StringField(this, 3, value);
 };
 
 
@@ -678,7 +733,8 @@ proto.metro.LinkRequest.prototype.toObject = function(opt_includeInstance) {
 proto.metro.LinkRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     token: (f = msg.getToken()) && proto.metro.Token.toObject(includeInstance, f),
-    station: (f = msg.getStation()) && proto.metro.Station.toObject(includeInstance, f)
+    src: (f = msg.getSrc()) && proto.metro.Station.toObject(includeInstance, f),
+    dst: (f = msg.getDst()) && proto.metro.Station.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -723,7 +779,12 @@ proto.metro.LinkRequest.deserializeBinaryFromReader = function(msg, reader) {
     case 2:
       var value = new proto.metro.Station;
       reader.readMessage(value,proto.metro.Station.deserializeBinaryFromReader);
-      msg.setStation(value);
+      msg.setSrc(value);
+      break;
+    case 3:
+      var value = new proto.metro.Station;
+      reader.readMessage(value,proto.metro.Station.deserializeBinaryFromReader);
+      msg.setDst(value);
       break;
     default:
       reader.skipField();
@@ -762,10 +823,18 @@ proto.metro.LinkRequest.serializeBinaryToWriter = function(message, writer) {
       proto.metro.Token.serializeBinaryToWriter
     );
   }
-  f = message.getStation();
+  f = message.getSrc();
   if (f != null) {
     writer.writeMessage(
       2,
+      f,
+      proto.metro.Station.serializeBinaryToWriter
+    );
+  }
+  f = message.getDst();
+  if (f != null) {
+    writer.writeMessage(
+      3,
       f,
       proto.metro.Station.serializeBinaryToWriter
     );
@@ -804,23 +873,23 @@ proto.metro.LinkRequest.prototype.hasToken = function() {
 
 
 /**
- * optional Station station = 2;
+ * optional Station src = 2;
  * @return {?proto.metro.Station}
  */
-proto.metro.LinkRequest.prototype.getStation = function() {
+proto.metro.LinkRequest.prototype.getSrc = function() {
   return /** @type{?proto.metro.Station} */ (
     jspb.Message.getWrapperField(this, proto.metro.Station, 2));
 };
 
 
 /** @param {?proto.metro.Station|undefined} value */
-proto.metro.LinkRequest.prototype.setStation = function(value) {
+proto.metro.LinkRequest.prototype.setSrc = function(value) {
   jspb.Message.setWrapperField(this, 2, value);
 };
 
 
-proto.metro.LinkRequest.prototype.clearStation = function() {
-  this.setStation(undefined);
+proto.metro.LinkRequest.prototype.clearSrc = function() {
+  this.setSrc(undefined);
 };
 
 
@@ -828,8 +897,38 @@ proto.metro.LinkRequest.prototype.clearStation = function() {
  * Returns whether this field is set.
  * @return {!boolean}
  */
-proto.metro.LinkRequest.prototype.hasStation = function() {
+proto.metro.LinkRequest.prototype.hasSrc = function() {
   return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional Station dst = 3;
+ * @return {?proto.metro.Station}
+ */
+proto.metro.LinkRequest.prototype.getDst = function() {
+  return /** @type{?proto.metro.Station} */ (
+    jspb.Message.getWrapperField(this, proto.metro.Station, 3));
+};
+
+
+/** @param {?proto.metro.Station|undefined} value */
+proto.metro.LinkRequest.prototype.setDst = function(value) {
+  jspb.Message.setWrapperField(this, 3, value);
+};
+
+
+proto.metro.LinkRequest.prototype.clearDst = function() {
+  this.setDst(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.metro.LinkRequest.prototype.hasDst = function() {
+  return jspb.Message.getField(this, 3) != null;
 };
 
 
@@ -881,8 +980,9 @@ proto.metro.TransmitRequest.prototype.toObject = function(opt_includeInstance) {
 proto.metro.TransmitRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     token: (f = msg.getToken()) && proto.metro.Token.toObject(includeInstance, f),
-    station: (f = msg.getStation()) && proto.metro.Station.toObject(includeInstance, f),
-    message: jspb.Message.getFieldWithDefault(msg, 3, "")
+    src: (f = msg.getSrc()) && proto.metro.Station.toObject(includeInstance, f),
+    dst: (f = msg.getDst()) && proto.metro.Station.toObject(includeInstance, f),
+    message: jspb.Message.getFieldWithDefault(msg, 4, "")
   };
 
   if (includeInstance) {
@@ -927,9 +1027,14 @@ proto.metro.TransmitRequest.deserializeBinaryFromReader = function(msg, reader) 
     case 2:
       var value = new proto.metro.Station;
       reader.readMessage(value,proto.metro.Station.deserializeBinaryFromReader);
-      msg.setStation(value);
+      msg.setSrc(value);
       break;
     case 3:
+      var value = new proto.metro.Station;
+      reader.readMessage(value,proto.metro.Station.deserializeBinaryFromReader);
+      msg.setDst(value);
+      break;
+    case 4:
       var value = /** @type {string} */ (reader.readString());
       msg.setMessage(value);
       break;
@@ -970,7 +1075,7 @@ proto.metro.TransmitRequest.serializeBinaryToWriter = function(message, writer) 
       proto.metro.Token.serializeBinaryToWriter
     );
   }
-  f = message.getStation();
+  f = message.getSrc();
   if (f != null) {
     writer.writeMessage(
       2,
@@ -978,10 +1083,18 @@ proto.metro.TransmitRequest.serializeBinaryToWriter = function(message, writer) 
       proto.metro.Station.serializeBinaryToWriter
     );
   }
+  f = message.getDst();
+  if (f != null) {
+    writer.writeMessage(
+      3,
+      f,
+      proto.metro.Station.serializeBinaryToWriter
+    );
+  }
   f = message.getMessage();
   if (f.length > 0) {
     writer.writeString(
-      3,
+      4,
       f
     );
   }
@@ -1019,23 +1132,23 @@ proto.metro.TransmitRequest.prototype.hasToken = function() {
 
 
 /**
- * optional Station station = 2;
+ * optional Station src = 2;
  * @return {?proto.metro.Station}
  */
-proto.metro.TransmitRequest.prototype.getStation = function() {
+proto.metro.TransmitRequest.prototype.getSrc = function() {
   return /** @type{?proto.metro.Station} */ (
     jspb.Message.getWrapperField(this, proto.metro.Station, 2));
 };
 
 
 /** @param {?proto.metro.Station|undefined} value */
-proto.metro.TransmitRequest.prototype.setStation = function(value) {
+proto.metro.TransmitRequest.prototype.setSrc = function(value) {
   jspb.Message.setWrapperField(this, 2, value);
 };
 
 
-proto.metro.TransmitRequest.prototype.clearStation = function() {
-  this.setStation(undefined);
+proto.metro.TransmitRequest.prototype.clearSrc = function() {
+  this.setSrc(undefined);
 };
 
 
@@ -1043,23 +1156,53 @@ proto.metro.TransmitRequest.prototype.clearStation = function() {
  * Returns whether this field is set.
  * @return {!boolean}
  */
-proto.metro.TransmitRequest.prototype.hasStation = function() {
+proto.metro.TransmitRequest.prototype.hasSrc = function() {
   return jspb.Message.getField(this, 2) != null;
 };
 
 
 /**
- * optional string message = 3;
+ * optional Station dst = 3;
+ * @return {?proto.metro.Station}
+ */
+proto.metro.TransmitRequest.prototype.getDst = function() {
+  return /** @type{?proto.metro.Station} */ (
+    jspb.Message.getWrapperField(this, proto.metro.Station, 3));
+};
+
+
+/** @param {?proto.metro.Station|undefined} value */
+proto.metro.TransmitRequest.prototype.setDst = function(value) {
+  jspb.Message.setWrapperField(this, 3, value);
+};
+
+
+proto.metro.TransmitRequest.prototype.clearDst = function() {
+  this.setDst(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.metro.TransmitRequest.prototype.hasDst = function() {
+  return jspb.Message.getField(this, 3) != null;
+};
+
+
+/**
+ * optional string message = 4;
  * @return {string}
  */
 proto.metro.TransmitRequest.prototype.getMessage = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
 
 /** @param {string} value */
 proto.metro.TransmitRequest.prototype.setMessage = function(value) {
-  jspb.Message.setProto3StringField(this, 3, value);
+  jspb.Message.setProto3StringField(this, 4, value);
 };
 
 
@@ -1110,8 +1253,10 @@ proto.metro.Signal.prototype.toObject = function(opt_includeInstance) {
  */
 proto.metro.Signal.toObject = function(includeInstance, msg) {
   var f, obj = {
-    station: (f = msg.getStation()) && proto.metro.Station.toObject(includeInstance, f),
-    message: jspb.Message.getFieldWithDefault(msg, 3, "")
+    src: (f = msg.getSrc()) && proto.metro.Station.toObject(includeInstance, f),
+    dst: (f = msg.getDst()) && proto.metro.Station.toObject(includeInstance, f),
+    message: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    control: jspb.Message.getFieldWithDefault(msg, 5, 0)
   };
 
   if (includeInstance) {
@@ -1151,11 +1296,20 @@ proto.metro.Signal.deserializeBinaryFromReader = function(msg, reader) {
     case 2:
       var value = new proto.metro.Station;
       reader.readMessage(value,proto.metro.Station.deserializeBinaryFromReader);
-      msg.setStation(value);
+      msg.setSrc(value);
       break;
     case 3:
+      var value = new proto.metro.Station;
+      reader.readMessage(value,proto.metro.Station.deserializeBinaryFromReader);
+      msg.setDst(value);
+      break;
+    case 4:
       var value = /** @type {string} */ (reader.readString());
       msg.setMessage(value);
+      break;
+    case 5:
+      var value = /** @type {!proto.metro.Signal.Control} */ (reader.readEnum());
+      msg.setControl(value);
       break;
     default:
       reader.skipField();
@@ -1186,7 +1340,7 @@ proto.metro.Signal.prototype.serializeBinary = function() {
  */
 proto.metro.Signal.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getStation();
+  f = message.getSrc();
   if (f != null) {
     writer.writeMessage(
       2,
@@ -1194,10 +1348,25 @@ proto.metro.Signal.serializeBinaryToWriter = function(message, writer) {
       proto.metro.Station.serializeBinaryToWriter
     );
   }
+  f = message.getDst();
+  if (f != null) {
+    writer.writeMessage(
+      3,
+      f,
+      proto.metro.Station.serializeBinaryToWriter
+    );
+  }
   f = message.getMessage();
   if (f.length > 0) {
     writer.writeString(
-      3,
+      4,
+      f
+    );
+  }
+  f = message.getControl();
+  if (f !== 0.0) {
+    writer.writeEnum(
+      5,
       f
     );
   }
@@ -1205,23 +1374,35 @@ proto.metro.Signal.serializeBinaryToWriter = function(message, writer) {
 
 
 /**
- * optional Station station = 2;
+ * @enum {number}
+ */
+proto.metro.Signal.Control = {
+  NOT_USED: 0,
+  START: 1,
+  TERMINATE: 2,
+  FORWARDED: 3,
+  MESSAGE: 4,
+  BLOCKED: 5
+};
+
+/**
+ * optional Station src = 2;
  * @return {?proto.metro.Station}
  */
-proto.metro.Signal.prototype.getStation = function() {
+proto.metro.Signal.prototype.getSrc = function() {
   return /** @type{?proto.metro.Station} */ (
     jspb.Message.getWrapperField(this, proto.metro.Station, 2));
 };
 
 
 /** @param {?proto.metro.Station|undefined} value */
-proto.metro.Signal.prototype.setStation = function(value) {
+proto.metro.Signal.prototype.setSrc = function(value) {
   jspb.Message.setWrapperField(this, 2, value);
 };
 
 
-proto.metro.Signal.prototype.clearStation = function() {
-  this.setStation(undefined);
+proto.metro.Signal.prototype.clearSrc = function() {
+  this.setSrc(undefined);
 };
 
 
@@ -1229,23 +1410,68 @@ proto.metro.Signal.prototype.clearStation = function() {
  * Returns whether this field is set.
  * @return {!boolean}
  */
-proto.metro.Signal.prototype.hasStation = function() {
+proto.metro.Signal.prototype.hasSrc = function() {
   return jspb.Message.getField(this, 2) != null;
 };
 
 
 /**
- * optional string message = 3;
+ * optional Station dst = 3;
+ * @return {?proto.metro.Station}
+ */
+proto.metro.Signal.prototype.getDst = function() {
+  return /** @type{?proto.metro.Station} */ (
+    jspb.Message.getWrapperField(this, proto.metro.Station, 3));
+};
+
+
+/** @param {?proto.metro.Station|undefined} value */
+proto.metro.Signal.prototype.setDst = function(value) {
+  jspb.Message.setWrapperField(this, 3, value);
+};
+
+
+proto.metro.Signal.prototype.clearDst = function() {
+  this.setDst(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {!boolean}
+ */
+proto.metro.Signal.prototype.hasDst = function() {
+  return jspb.Message.getField(this, 3) != null;
+};
+
+
+/**
+ * optional string message = 4;
  * @return {string}
  */
 proto.metro.Signal.prototype.getMessage = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
 
 /** @param {string} value */
 proto.metro.Signal.prototype.setMessage = function(value) {
-  jspb.Message.setProto3StringField(this, 3, value);
+  jspb.Message.setProto3StringField(this, 4, value);
+};
+
+
+/**
+ * optional Control control = 5;
+ * @return {!proto.metro.Signal.Control}
+ */
+proto.metro.Signal.prototype.getControl = function() {
+  return /** @type {!proto.metro.Signal.Control} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
+};
+
+
+/** @param {!proto.metro.Signal.Control} value */
+proto.metro.Signal.prototype.setControl = function(value) {
+  jspb.Message.setProto3EnumField(this, 5, value);
 };
 
 

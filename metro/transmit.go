@@ -1,43 +1,72 @@
 package metro
 
 import (
+	"context"
 	code "net/http"
 
 	log "github.com/sirupsen/logrus"
-	"golang.org/x/net/context"
 )
 
-// Transmit messages to other server or Metro through Metro server steram
+func (desc *instDesc) transmit(signal Signal) error {
+	body, ok := desc.getBody()
+	if !ok {
+		return errNExists
+	}
+
+	body.transmit <- signal
+	return nil
+}
+
+func (req *TransmitRequest) toInstDesc() (*instDesc, error) {
+	if desc, ok := req.GetToken().getDesc(); ok {
+		return &desc, nil
+	}
+
+	return nil, errInvTkn
+}
+
+// Transmit deliver messages to other server or Metro through Metro server steram
 func (h *ServerHandle) Transmit(ctx context.Context, in *TransmitRequest) (*Status, error) {
-	status := &Status{Code: code.StatusOK}
-	token := in.GetToken()
-	station := in.GetStation()
+	var (
+		status = &Status{Code: code.StatusOK}
+		token  = in.GetToken()
+		srcSt  = in.GetSrc()
+		dstSt  = in.GetDst()
+	)
 
-	log.WithFields(log.Fields{
-		"token": token.toShort(),
-		"image": station.GetImage(),
-	}).Info("Transmit is requested")
-
-	if dest, err := station.getStBody(); err == nil {
-		orgn, _ := token.getStBody()
-
-		dest.transmit <- Signal{
-			Station: orgn.descriptor.toStation(),
-			Message: in.GetMessage(),
-		}
-
-		log.WithFields(log.Fields{
-			"token": token.toShort(),
-			"dest":  dest.descriptor.name,
-			"msg":   in.GetMessage(),
-		}).Info("signal transmited")
-	} else {
-		log.WithFields(log.Fields{
-			"name": station.GetName(),
-		}).Warn(err)
-		status.Code = code.StatusNotFound
+	srcDesc, ok := token.getDesc()
+	if !ok {
+		log.Warn(errInvTkn)
+		status.Code = code.StatusUnauthorized
 		return status, nil
 	}
+	srcSt.Image = srcDesc.image
+	dstSt.Id = srcSt.GetId()
+
+	dstDesc := &instDesc{
+		userID: srcDesc.userID,
+		image:  dstSt.GetImage(),
+	}
+
+	logger := log.WithFields(log.Fields{
+		"token": token.toShort(),
+		"flow":  srcSt.toShort(),
+		"src":   srcSt.toString(),
+		"dst":   dstSt.toString(),
+	})
+
+	logger.Info("Transmit is requested")
+
+	dstDesc.transmit(Signal{
+		Src:     dstSt,
+		Dst:     dstSt,
+		Message: in.GetMessage(),
+		Control: Signal_MESSAGE,
+	})
+
+	logger.WithFields(log.Fields{
+		"msg": in.GetMessage(),
+	}).Info("message is transmited")
 
 	return status, nil
 }

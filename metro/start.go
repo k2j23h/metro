@@ -2,63 +2,72 @@ package metro
 
 import (
 	code "net/http"
-	"strconv"
 
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
 )
 
+func (desc *instDesc) start(name string) (string, error) {
+	station := &Station{
+		Id:   generateID(),
+		Name: name,
+	}
+
+	if err := desc.transmit(Signal{
+		Dst:     station,
+		Control: Signal_START,
+	}); err != nil {
+		return "", err
+	}
+
+	return station.GetId(), nil
+}
+
 // Start creates entry point Station
 func (h *ServerHandle) Start(ctx context.Context, in *StartRequest) (*Status, error) {
-	station := in.GetStation()
-	status := Status{Code: code.StatusOK}
+	var (
+		status  = &Status{Code: code.StatusOK}
+		station = in.GetStation()
+		desc    = &instDesc{
+			userID: in.GetUserID(),
+			image:  station.GetImage(),
+		}
+	)
 
-	log.WithFields(log.Fields{
-		"name":  station.GetName(),
-		"image": station.GetImage(),
-	}).Info("Start is requested")
-
-	res, err := DckrCli.ContainerCreate(ctx, &container.Config{
-		Image: station.Image,
-		Env: []string{
-			"LOCO_METRO_SERVER_HOST=" + metroContName,
-			"LOCO_METRO_SERVER_PORT=" + strconv.Itoa(int(serveOpts.Port)),
-		},
-	}, &container.HostConfig{
-		NetworkMode: metroContNetMode,
-	}, nil, station.GetName())
-	if err != nil {
-		log.Warn(err)
-		status.Code = code.StatusNotFound
-		return &status, nil
-	}
-
-	log.WithFields(log.Fields{
-		"token": shortToken(res.ID),
-		"name":  station.GetName(),
-		"image": station.GetImage(),
-	}).Info("new station created")
-
-	register(&StationDescriptor{
-		station.GetName(),
-		station.GetImage(),
-		res.ID,
+	logger := log.WithFields(log.Fields{
+		"userID": desc.userID,
+		"image":  desc.image,
+		"name":   station.GetName(),
 	})
 
-	if err := DckrCli.ContainerStart(
-		context.Background(), res.ID,
-		types.ContainerStartOptions{},
-	); err != nil {
-		log.Fatal(err)
+	logger.Info("Start is requested")
+
+	err := newInstance(desc)
+
+	switch err {
+	default:
+		status.Code = code.StatusInternalServerError
+		logger.Warn(err)
+		return status, nil
+	case errExists:
+	case nil:
+		logger.Info("new instance is created")
 	}
 
-	log.WithFields(log.Fields{
-		"token": shortToken(res.ID),
-		"name":  station.GetName(),
-		"image": station.GetImage(),
-	}).Info("new station started")
+	flowID, err := desc.start(station.GetName())
 
-	return &status, nil
+	switch err {
+	default:
+		status.Code = code.StatusInternalServerError
+		logger.Warn(err)
+		return status, nil
+	case errNExists:
+		logger.Fatal("it should not be happend")
+	case nil:
+		logger.WithField(
+			"flow", truncateID(flowID),
+		).Info("new flow is started")
+	}
+
+	return status, nil
 }

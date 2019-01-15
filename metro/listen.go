@@ -6,34 +6,38 @@ import (
 
 // Listen messages come from other stations or Metro through Metro server stream
 func (h *ServerHandle) Listen(token *Token, stream Metro_ListenServer) error {
-
-	log.WithFields(log.Fields{
-		"token": token.toShort(),
-	}).Info("Listen is requested")
-
-	station, err := token.getStBody()
-	if err != nil {
-		log.WithFields(log.Fields{
-			"token": token.toShort(),
-		}).Warn(err)
-
+	desc, ok := token.getDesc()
+	if !ok {
+		log.Warn(errInvTkn)
 		return nil
+	}
+
+	logger := log.WithFields(log.Fields{
+		"token": token.toShort(),
+		"user":  desc.userID,
+		"image": desc.image,
+	})
+
+	logger.Info("Listen is requested")
+
+	body, ok := desc.getBody()
+	if !ok {
+		logger.Fatal(errNExists)
 	}
 
 	go func() {
 		for {
 			select {
 			case <-stream.Context().Done():
-				log.WithFields(log.Fields{
-					"token": token.toShort(),
-				}).Info("stops listening")
+				logger.Info("stops listening")
 				return
-			case sig := <-station.transmit:
+			case sig := <-body.transmit:
 				stream.Send(&sig)
 			}
 		}
 	}()
 
 	<-stream.Context().Done()
+	logger.Info("stops listening")
 	return nil
 }

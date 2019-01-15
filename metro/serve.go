@@ -38,7 +38,7 @@ func Serve(opt *ServeOptions) {
 	updateInfo()
 
 	log.WithFields(log.Fields{
-		"ID":   shortToken(metroContID),
+		"ID":   truncateID(metroContID),
 		"Name": metroContName,
 	}).Info("the Metro server inspected")
 
@@ -54,8 +54,6 @@ func Serve(opt *ServeOptions) {
 
 	s := grpc.NewServer()
 	RegisterMetroServer(s, &ServerHandle{})
-
-	go autoUnregister()
 
 	reflection.Register(s)
 	log.WithFields(serveOptFields).Info("starting the GRPC server")

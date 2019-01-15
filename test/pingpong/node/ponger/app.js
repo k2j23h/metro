@@ -10,7 +10,7 @@ module.exports = async (station)=>{
 
     let cnt = 0;
 
-    station.on('signal', (from, msg)=>{
+    station.on('signal', (msg, from)=>{
         console.log(`${msg} from ${from.name}`)
         pong()
         if(++cnt == 3){

@@ -1,69 +1,63 @@
 package metro
 
 import (
+	"context"
 	code "net/http"
-	"strconv"
 
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/api/types/container"
 	log "github.com/sirupsen/logrus"
-	"golang.org/x/net/context"
 )
 
 // Link connects two stations between caller and requested station
 func (h *ServerHandle) Link(ctx context.Context, in *LinkRequest) (*Status, error) {
-	token := in.GetToken()
-	station := in.GetStation()
-	status := Status{Code: code.StatusOK}
+	var (
+		status = &Status{Code: code.StatusOK}
+		token  = in.GetToken()
+		srcSt  = in.GetSrc()
+		dstSt  = in.GetDst()
+	)
 
-	log.WithFields(log.Fields{
+	srcDesc, ok := token.getDesc()
+	if !ok {
+		log.Warn(errInvTkn)
+		status.Code = code.StatusUnauthorized
+		return status, nil
+	}
+	srcSt.Image = srcDesc.image
+	dstSt.Id = srcSt.GetId()
+
+	dstDesc := &instDesc{
+		userID: srcDesc.userID,
+		image:  dstSt.GetImage(),
+	}
+
+	logger := log.WithFields(log.Fields{
 		"token": token.toShort(),
-		"image": station.GetImage(),
-	}).Info("Link is requested")
-
-	if ok := station.isNameRegistered(); ok {
-		return &status, nil
-	}
-
-	res, err := DckrCli.ContainerCreate(ctx, &container.Config{
-		Image: station.GetImage(),
-		Env: []string{
-			"LOCO_METRO_SERVER_HOST=" + metroContName,
-			"LOCO_METRO_SERVER_PORT=" + strconv.Itoa(int(serveOpts.Port)),
-		},
-	}, &container.HostConfig{
-		NetworkMode: metroContNetMode,
-	}, nil, station.GetName())
-	if err != nil {
-		log.Warn(err)
-		status.Code = code.StatusNotFound
-		return &status, nil
-	}
-
-	log.WithFields(log.Fields{
-		"token": shortToken(res.ID),
-		"name":  station.GetName(),
-		"image": station.GetImage(),
-	}).Info("new station created")
-
-	register(&StationDescriptor{
-		station.GetName(),
-		station.GetImage(),
-		res.ID,
+		"flow":  srcSt.toShort(),
+		"src":   srcSt.toString(),
+		"dst":   dstSt.toString(),
 	})
 
-	if err := DckrCli.ContainerStart(
-		context.Background(), res.ID,
-		types.ContainerStartOptions{},
-	); err != nil {
-		log.Fatal(err)
+	logger.Info("Link is requested")
+
+	err := newInstance(dstDesc)
+
+	switch err {
+	default:
+		status.Code = code.StatusInternalServerError
+		logger.Warn(err)
+		return status, nil
+	case errExists:
+	case nil:
+		logger.Info("new instance is created")
 	}
 
-	log.WithFields(log.Fields{
-		"token": shortToken(res.ID),
-		"name":  station.GetName(),
-		"image": station.GetImage(),
-	}).Info("new station started")
+	dstDesc.transmit(Signal{
+		Src:     srcSt,
+		Dst:     dstSt,
+		Control: Signal_FORWARDED,
+	})
 
-	return &status, nil
+	logger.Info("fowarded")
+
+	return status, nil
 }

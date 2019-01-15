@@ -4,6 +4,9 @@
 import * as jspb from "google-protobuf";
 
 export class Station extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
   getName(): string;
   setName(value: string): void;
 
@@ -22,6 +25,7 @@ export class Station extends jspb.Message {
 
 export namespace Station {
   export type AsObject = {
+    id: string,
     name: string,
     image: string,
   }
@@ -73,6 +77,9 @@ export class StartRequest extends jspb.Message {
   getStation(): Station | undefined;
   setStation(value?: Station): void;
 
+  getUserid(): string;
+  setUserid(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): StartRequest.AsObject;
   static toObject(includeInstance: boolean, msg: StartRequest): StartRequest.AsObject;
@@ -86,6 +93,7 @@ export class StartRequest extends jspb.Message {
 export namespace StartRequest {
   export type AsObject = {
     station?: Station.AsObject,
+    userid: string,
   }
 }
 
@@ -95,10 +103,15 @@ export class LinkRequest extends jspb.Message {
   getToken(): Token | undefined;
   setToken(value?: Token): void;
 
-  hasStation(): boolean;
-  clearStation(): void;
-  getStation(): Station | undefined;
-  setStation(value?: Station): void;
+  hasSrc(): boolean;
+  clearSrc(): void;
+  getSrc(): Station | undefined;
+  setSrc(value?: Station): void;
+
+  hasDst(): boolean;
+  clearDst(): void;
+  getDst(): Station | undefined;
+  setDst(value?: Station): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): LinkRequest.AsObject;
@@ -113,7 +126,8 @@ export class LinkRequest extends jspb.Message {
 export namespace LinkRequest {
   export type AsObject = {
     token?: Token.AsObject,
-    station?: Station.AsObject,
+    src?: Station.AsObject,
+    dst?: Station.AsObject,
   }
 }
 
@@ -123,10 +137,15 @@ export class TransmitRequest extends jspb.Message {
   getToken(): Token | undefined;
   setToken(value?: Token): void;
 
-  hasStation(): boolean;
-  clearStation(): void;
-  getStation(): Station | undefined;
-  setStation(value?: Station): void;
+  hasSrc(): boolean;
+  clearSrc(): void;
+  getSrc(): Station | undefined;
+  setSrc(value?: Station): void;
+
+  hasDst(): boolean;
+  clearDst(): void;
+  getDst(): Station | undefined;
+  setDst(value?: Station): void;
 
   getMessage(): string;
   setMessage(value: string): void;
@@ -144,19 +163,28 @@ export class TransmitRequest extends jspb.Message {
 export namespace TransmitRequest {
   export type AsObject = {
     token?: Token.AsObject,
-    station?: Station.AsObject,
+    src?: Station.AsObject,
+    dst?: Station.AsObject,
     message: string,
   }
 }
 
 export class Signal extends jspb.Message {
-  hasStation(): boolean;
-  clearStation(): void;
-  getStation(): Station | undefined;
-  setStation(value?: Station): void;
+  hasSrc(): boolean;
+  clearSrc(): void;
+  getSrc(): Station | undefined;
+  setSrc(value?: Station): void;
+
+  hasDst(): boolean;
+  clearDst(): void;
+  getDst(): Station | undefined;
+  setDst(value?: Station): void;
 
   getMessage(): string;
   setMessage(value: string): void;
+
+  getControl(): Signal.Control;
+  setControl(value: Signal.Control): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Signal.AsObject;
@@ -170,8 +198,19 @@ export class Signal extends jspb.Message {
 
 export namespace Signal {
   export type AsObject = {
-    station?: Station.AsObject,
+    src?: Station.AsObject,
+    dst?: Station.AsObject,
     message: string,
+    control: Signal.Control,
+  }
+
+  export enum Control {
+    NOT_USED = 0,
+    START = 1,
+    TERMINATE = 2,
+    FORWARDED = 3,
+    MESSAGE = 4,
+    BLOCKED = 5,
   }
 }
 

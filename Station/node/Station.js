@@ -6,8 +6,10 @@ const token = require('./token')
 
 module.exports = class Station {
   constructor ({
-    flowID, name
-  }, emitter) {
+    flowID, name, emitter
+  }) {
+    this._flowID = flowID
+    this._fID = flowID.slice(0, 12)
     this._emitter = emitter
     this._station = (() => {
       let st = new MetroMessage.Station()
@@ -113,5 +115,9 @@ module.exports = class Station {
 
   close () {
 
+  }
+
+  log (message) {
+    console.log(`${this._fID} ${message}`)
   }
 }

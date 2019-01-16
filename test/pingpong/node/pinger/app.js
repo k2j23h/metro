@@ -13,7 +13,7 @@ module.exports = async (station)=>{
     let cnt = 0;
 
     station.on('signal', (msg, from)=>{
-        console.log(`${msg} from ${from.name}`)
+        station.log(`${msg} from ${from.name}`)
         if(++cnt == 3){
             station.close()
             return
@@ -22,7 +22,7 @@ module.exports = async (station)=>{
     })
 
     let ping = ()=>{
-        console.log('ping')
+        station.log('ping')
         setTimeout(() => {
             station.signal('pinged').to(ponger).catch(_.noop)
         }, 1000);

@@ -13,7 +13,7 @@ module.exports = async (station)=>{
     let cnt = 0;
 
     station.on('signal', (msg, from)=>{
-        console.log(`${msg} from ${from.name}`)
+        station.log(`${msg} from ${from.name}`)
         pong()
         if(++cnt == 3){
             station.close()
@@ -22,7 +22,7 @@ module.exports = async (station)=>{
     })
 
     let pong = ()=>{
-        console.log('pong')
+        station.log('pong')
         setTimeout(() => {
             station.signal('ponged').to(pinger).catch(_.noop)
         }, 1000);

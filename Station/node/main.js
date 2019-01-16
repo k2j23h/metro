@@ -19,6 +19,12 @@ function signalHandler (res) {
   const isExists = flows.have(flowID, dstName)
   const fetch = _.partial(flows.get, flowID, dstName)
   const create = _.partial(flows.create, flowID, dstName)
+  const start = () => {
+    let body = create()
+    app(body.station)
+    body.station.log('new station is open')
+    return body
+  }
 
   const toDesc = (st) => ({
     id: st.getId(),
@@ -32,37 +38,38 @@ function signalHandler (res) {
       console.log('unmanaged control flag: ' + ctrl)
       break
 
-    case SigCtrl.START:
+    case SigCtrl.START: (() => {
       if (isExists) {
         fetch().station.log('already opened station')
-        break
+        return
       }
-      create().station.log('new station is open')
-      break
+
+      start()
+    })(); break
 
     case SigCtrl.TERMINATE:
       break
 
-    case SigCtrl.FORWARDED:
-      let { station, emitter } = isExists ? fetch() : create()
+    case SigCtrl.FORWARDED: (() => {
+      let emitter = isExists ? fetch().emitter : start().emitter
       emitter.emit('forwarded', toDesc(srcSt))
-      break
+    })(); break
 
-    case SigCtrl.MESSAGE:
+    case SigCtrl.MESSAGE: (() => {
       if (!isExists) {
         console.warn('not found')
-        break
+        return
       }
-      emitter.emit('signal', res.getMessage(), toDesc(srcSt))
-      break
+      fetch().emitter.emit('signal', res.getMessage(), toDesc(srcSt))
+    })(); break
 
-    case SigCtrl.BLOCKED:
+    case SigCtrl.BLOCKED: (() => {
       if (!isExists) {
         console.warn('not found')
-        break
+        return
       }
-      emitter.emit('blocked', res.getMessage(), toDesc(srcSt))
-      break
+      fetch().emitter.emit('blocked', res.getMessage(), toDesc(srcSt))
+    })(); break
   }
 }
 

@@ -4,10 +4,10 @@ const _ = require('lodash')
 const MetroMessage = require('./pb/Metro_pb')
 
 /**
- * @summary The token required to request to the Metro Server.
+ * @summary The `token` required to request to the `Metro`.
  * @description
- * The token is actually the container id of the current container.
- * If proccess isn't in the container (such reason of debugging), it starts with 'zz'.
+ * The `token` is actually the container id of the current container.
+ * If process isn't in the container (such reason of debugging), it starts with 'zz'.
  * @type {string}
  */
 module.exports = (() => {

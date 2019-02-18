@@ -1,18 +1,17 @@
-const EventEmitter = require('events')
 const _ = require('lodash')
 const grpc = require('grpc')
 
 const SigCtrl = require('./pb/Metro_pb').Signal.Control
 const MetroClient = require('./MetroClient')
-const Station = require('./Station')
 const token = require('./token')
 const flows = require('./flows')
-const app = require('./app')
+const app = require('./app/main')
 
 /** @param {import('./pb/Metro_pb').Signal} res */
 function signalHandler (res) {
   const srcSt = res.getSrc()
   const dstSt = res.getDst()
+
   const flowID = dstSt.getId()
   const dstName = dstSt.getName()
 
@@ -21,8 +20,8 @@ function signalHandler (res) {
   const create = _.partial(flows.create, flowID, dstName)
   const start = () => {
     let body = create()
-    app(body.station)
     body.station.log('new station is open')
+    app(body.station)
     return body
   }
 
@@ -47,12 +46,17 @@ function signalHandler (res) {
       start()
     })(); break
 
-    case SigCtrl.TERMINATE:
-      break
+    case SigCtrl.TERMINATE: (() => {
+      if (!isExists) {
+        console.warn('not found')
+        return
+      }
+      flows.del(flowID, dstName)
+    })(); break
 
-    case SigCtrl.FORWARDED: (() => {
+    case SigCtrl.LINKED: (() => {
       let emitter = isExists ? fetch().emitter : start().emitter
-      emitter.emit('forwarded', toDesc(srcSt))
+      emitter.emit('linked', toDesc(srcSt))
     })(); break
 
     case SigCtrl.MESSAGE: (() => {
@@ -74,16 +78,16 @@ function signalHandler (res) {
 }
 
 function main () {
-  let listenStream = MetroClient.listen(token)
+  let sigStream = MetroClient.listen(token)
 
-  listenStream.on('data', signalHandler)
+  sigStream.on('data', signalHandler)
 
-  listenStream.on('error', err => {
+  sigStream.on('error', err => {
     if (err && err.code === grpc.status.CANCELLED) return
     throw err
   })
 
-  listenStream.on('end', () => {
+  sigStream.on('end', () => {
     throw new Error('Unexpected end of stream')
   })
 }

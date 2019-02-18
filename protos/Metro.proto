@@ -5,6 +5,7 @@ package metro;
 service Metro {
     rpc Start (StartRequest) returns (Status) {};
     rpc Link (LinkRequest) returns (Status) {};
+    rpc Block (BlockRequest) returns (Status) {};
     rpc Transmit (TransmitRequest) returns (Status) {};
     rpc Listen (Token) returns (stream Signal) {};
 }
@@ -37,6 +38,16 @@ message LinkRequest {
     Station src = 2;
     // required(name, image)
     Station dst = 3;
+    string message = 4;
+}
+
+message BlockRequest {
+    Token token = 1;
+    // required(id, name)
+    Station src = 2;
+    // required(name, image)
+    Station dst = 3;
+    string message = 4;
 }
 
 message TransmitRequest {
@@ -44,13 +55,13 @@ message TransmitRequest {
     // required(id, name)
     Station src = 2;
     // required(name, image)
-    Station dst = 3;        
+    Station dst = 3;
     string message = 4;
 }
 
 // required                 src dst msg
 // for control=START,        n   y   n
-// for control=FORWARDED,    y   y   n
+// for control=LINKED,       y   y   n
 // for control=MESSAGE       y   y   o
 message Signal {
     // required(id, name, image)
@@ -62,7 +73,7 @@ message Signal {
         NOT_USED = 0;
         START = 1;
         TERMINATE = 2;
-        FORWARDED = 3;
+        LINKED = 3;
         MESSAGE = 4;
         BLOCKED = 5;
     }

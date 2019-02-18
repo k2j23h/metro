@@ -4,6 +4,17 @@
 var grpc = require('grpc');
 var Metro_pb = require('./Metro_pb.js');
 
+function serialize_metro_BlockRequest(arg) {
+  if (!(arg instanceof Metro_pb.BlockRequest)) {
+    throw new Error('Expected argument of type metro.BlockRequest');
+  }
+  return new Buffer(arg.serializeBinary());
+}
+
+function deserialize_metro_BlockRequest(buffer_arg) {
+  return Metro_pb.BlockRequest.deserializeBinary(new Uint8Array(buffer_arg));
+}
+
 function serialize_metro_LinkRequest(arg) {
   if (!(arg instanceof Metro_pb.LinkRequest)) {
     throw new Error('Expected argument of type metro.LinkRequest');
@@ -91,6 +102,17 @@ var MetroService = exports.MetroService = {
     responseType: Metro_pb.Status,
     requestSerialize: serialize_metro_LinkRequest,
     requestDeserialize: deserialize_metro_LinkRequest,
+    responseSerialize: serialize_metro_Status,
+    responseDeserialize: deserialize_metro_Status,
+  },
+  block: {
+    path: '/metro.Metro/Block',
+    requestStream: false,
+    responseStream: false,
+    requestType: Metro_pb.BlockRequest,
+    responseType: Metro_pb.Status,
+    requestSerialize: serialize_metro_BlockRequest,
+    requestDeserialize: deserialize_metro_BlockRequest,
     responseSerialize: serialize_metro_Status,
     responseDeserialize: deserialize_metro_Status,
   },

@@ -4,29 +4,26 @@ const _ = require('lodash')
  * @param {import('../../../station/js/CurrentStation')} station
  */
 module.exports = async (station)=>{
-    const ponger = {
-        name: 'ponger',
-        image: 'ponger:latest'
+    const pinger = {
+        name: 'pinger',
+        image: 'pinger:latest'
     }
-    station.towards(ponger).catch(_.noop)
 
     let cnt = 0;
 
     station.on('signal', (msg, from)=>{
         station.log(`${msg} from ${from.name}`)
+        pong()
         if(++cnt == 3){
             station.close()
             return
         } 
-        ping()
-    })
+    }).link(pinger).catch(_.noop)
 
-    let ping = ()=>{
-        station.log('ping')
+    let pong = ()=>{
+        station.log('pong')
         setTimeout(() => {
-            station.signal('pinged').to(ponger).catch(_.noop)
+            station.signal('ponged').to(pinger).catch(_.noop)
         }, 1000);
     }
-
-    ping()
 }

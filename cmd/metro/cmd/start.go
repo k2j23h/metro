@@ -33,7 +33,7 @@ var (
 
 // startCmd represents the start command
 var startCmd = &cobra.Command{
-	Use:   "start [OPTIONS] IMAGE",
+	Use:   "start IMAGE",
 	Short: "Start new workflow entry point",
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {

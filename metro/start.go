@@ -28,10 +28,7 @@ func (h *ServerHandle) Start(ctx context.Context, in *StartRequest) (*Status, er
 	var (
 		status  = &Status{Code: code.StatusOK}
 		station = in.GetStation()
-		desc    = &instDesc{
-			userID: in.GetUserID(),
-			image:  station.GetImage(),
-		}
+		desc    = newInstDesc(in.GetUserID(), station.GetImage())
 	)
 
 	logger := log.WithFields(log.Fields{
@@ -42,7 +39,7 @@ func (h *ServerHandle) Start(ctx context.Context, in *StartRequest) (*Status, er
 
 	logger.Info("Start is requested")
 
-	err := newInstance(desc)
+	err := newInstance(desc, nil)
 
 	switch err {
 	default:
@@ -50,6 +47,10 @@ func (h *ServerHandle) Start(ctx context.Context, in *StartRequest) (*Status, er
 		logger.Warn(err)
 		return status, nil
 	case errExists:
+	case errNExists:
+		status.Code = code.StatusNotFound
+		logger.Warn(err)
+		return status, nil
 	case nil:
 		logger.Info("new instance is created")
 	}

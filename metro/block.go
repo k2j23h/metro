@@ -7,23 +7,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (desc *instDesc) transmit(signal Signal) error {
-	body, ok := desc.getBody()
-	if !ok {
-		return errNExists
-	}
-
-	body.transmit <- signal
-	return nil
-}
-
-// Transmit deliver messages to other server or Metro through Metro server steram
-func (h *ServerHandle) Transmit(ctx context.Context, in *TransmitRequest) (*Status, error) {
+// Block prevent transmiting signal to src from dst
+func (h *ServerHandle) Block(ctx context.Context, in *BlockRequest) (*Status, error) {
 	var (
 		status = &Status{Code: code.StatusOK}
 		token  = in.GetToken()
 		srcSt  = in.GetSrc()
 		dstSt  = in.GetDst()
+		msg    = in.GetMessage()
 	)
 
 	srcDesc, ok := token.getDesc()
@@ -47,18 +38,16 @@ func (h *ServerHandle) Transmit(ctx context.Context, in *TransmitRequest) (*Stat
 		"dst":   dstSt.toString(),
 	})
 
-	logger.Info("Transmit is requested")
+	logger.Info("Block is requested")
 
 	dstDesc.transmit(Signal{
 		Src:     srcSt,
 		Dst:     dstSt,
-		Message: in.GetMessage(),
-		Control: Signal_MESSAGE,
+		Control: Signal_BLOCKED,
+		Message: msg,
 	})
 
-	logger.WithFields(log.Fields{
-		"msg": in.GetMessage(),
-	}).Info("message is transmitted")
+	logger.Info("blocked")
 
 	return status, nil
 }

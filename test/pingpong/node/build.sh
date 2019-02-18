@@ -2,7 +2,7 @@
 
 base_path=$(dirname $0)
 
-$base_path/pinger/build.sh >> $base_path/pinger.log &
-$base_path/ponger/build.sh >> $base_path/ponger.log &
+metro create -n pinger $base_path/pinger 
+metro create -n ponger $base_path/ponger
 
 wait

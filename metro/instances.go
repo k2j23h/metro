@@ -1,11 +1,12 @@
 package metro
 
 import (
+	"context"
 	"strconv"
+	"strings"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
-	context "golang.org/x/net/context"
 )
 
 var (
@@ -23,6 +24,17 @@ type instDesc struct {
 type instBody struct {
 	contID   string
 	transmit chan Signal
+}
+
+func newInstDesc(userID, image string) *instDesc {
+	if !strings.Contains(image, ":") {
+		image = image + ":latest"
+	}
+
+	return &instDesc{
+		userID: userID,
+		image:  image,
+	}
 }
 
 func (token *Token) getDesc() (instDesc, bool) {
@@ -58,7 +70,7 @@ func createInst(image string) (string, error) {
 	return res.ID, err
 }
 
-func newInstance(desc *instDesc) error {
+func newInstance(desc *instDesc, sig *Signal) error {
 	pool, ok := instances[desc.userID]
 	if !ok {
 		inst := make(map[string]instBody)
@@ -70,20 +82,28 @@ func newInstance(desc *instDesc) error {
 		return errExists
 	}
 
-	pool[desc.image] = instBody{transmit: make(chan Signal, 1)}
+	tc := make(chan Signal, 3)
+	if sig != nil {
+		tc <- *sig
+	}
 
-	go func() {
-		contID, err := createInst(desc.image)
+	pool[desc.image] = instBody{transmit: tc}
 
-		if err != nil {
-			delete(pool, desc.image)
-			return
+	contID, err := createInst(desc.image)
+
+	if err != nil {
+		delete(pool, desc.image)
+
+		if i, ok := err.(interface{ NotFound() bool }); ok && i.NotFound() {
+			return errNExists
 		}
 
-		body, _ := pool[desc.image]
-		body.contID = contID
-		containers[contID] = *desc
-	}()
+		return err
+	}
+
+	body, _ := pool[desc.image]
+	body.contID = contID
+	containers[contID] = *desc
 
 	return nil
 }

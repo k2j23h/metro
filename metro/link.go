@@ -14,6 +14,7 @@ func (h *ServerHandle) Link(ctx context.Context, in *LinkRequest) (*Status, erro
 		token  = in.GetToken()
 		srcSt  = in.GetSrc()
 		dstSt  = in.GetDst()
+		msg    = in.GetMessage()
 	)
 
 	srcDesc, ok := token.getDesc()
@@ -39,7 +40,12 @@ func (h *ServerHandle) Link(ctx context.Context, in *LinkRequest) (*Status, erro
 
 	logger.Info("Link is requested")
 
-	err := newInstance(dstDesc)
+	err := newInstance(dstDesc, &Signal{
+		Src:     srcSt,
+		Dst:     dstSt,
+		Control: Signal_LINKED,
+		Message: msg,
+	})
 
 	switch err {
 	default:
@@ -51,13 +57,14 @@ func (h *ServerHandle) Link(ctx context.Context, in *LinkRequest) (*Status, erro
 		logger.Info("new instance is created")
 	}
 
-	dstDesc.transmit(Signal{
-		Src:     srcSt,
-		Dst:     dstSt,
-		Control: Signal_FORWARDED,
-	})
+	// dstDesc.transmit(Signal{
+	// 	Src:     srcSt,
+	// 	Dst:     dstSt,
+	// 	Control: Signal_LINKED,
+	// 	Message: msg,
+	// })
 
-	logger.Info("fowarded")
+	logger.Info("linked")
 
 	return status, nil
 }

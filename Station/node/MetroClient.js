@@ -12,6 +12,7 @@ let cli = new MetroService.MetroClient(
 )
 // require('grpc-promise').promisifyAll(cli)
 promisify(cli, [
+  'block',
   'link',
   'transmit'
 ])

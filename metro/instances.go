@@ -78,7 +78,10 @@ func newInstance(desc *instDesc, sig *Signal) error {
 		pool = inst
 	}
 
-	if _, ok := pool[desc.image]; ok {
+	if body, ok := pool[desc.image]; ok {
+		if sig != nil {
+			body.transmit <- *sig
+		}
 		return errExists
 	}
 

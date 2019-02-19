@@ -21,7 +21,7 @@ function signalHandler (res) {
   const start = () => {
     let body = create()
     body.station.log('new station is open')
-    app(body.station)
+    app(body.station).catch(_.nopp)
     return body
   }
 
@@ -48,7 +48,7 @@ function signalHandler (res) {
 
     case SigCtrl.TERMINATE: (() => {
       if (!isExists) {
-        console.warn('not found')
+        console.warn(Date.now(), 'TERM: not found', flowID)
         return
       }
       flows.del(flowID, dstName)
@@ -56,12 +56,13 @@ function signalHandler (res) {
 
     case SigCtrl.LINKED: (() => {
       let emitter = isExists ? fetch().emitter : start().emitter
-      emitter.emit('linked', toDesc(srcSt))
+      emitter.emit('linked', res.getMessage(), toDesc(srcSt))
+      console.log(Date.now(), 'linked', flowID)
     })(); break
 
     case SigCtrl.MESSAGE: (() => {
       if (!isExists) {
-        console.warn('not found')
+        console.warn(Date.now(), 'MSG: not found', flowID)
         return
       }
       fetch().emitter.emit('signal', res.getMessage(), toDesc(srcSt))
@@ -69,7 +70,7 @@ function signalHandler (res) {
 
     case SigCtrl.BLOCKED: (() => {
       if (!isExists) {
-        console.warn('not found')
+        console.warn(Date.now(), 'BLCK: not found', flowID)
         return
       }
       fetch().emitter.emit('blocked', res.getMessage(), toDesc(srcSt))

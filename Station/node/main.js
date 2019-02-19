@@ -1,8 +1,8 @@
 const _ = require('lodash')
 const grpc = require('grpc')
 
-const SigCtrl = require('./pb/Metro_pb').Signal.Control
-const MetroClient = require('./MetroClient')
+const SigCtrl = require('./pb/Router_pb').Signal.Control
+const RouterClient = require('./RouterClient')
 const token = require('./token')
 const flows = require('./flows')
 const app = require('./app/main')
@@ -79,7 +79,7 @@ function signalHandler (res) {
 }
 
 function main () {
-  let sigStream = MetroClient.listen(token)
+  let sigStream = RouterClient.listen(token)
 
   sigStream.on('data', signalHandler)
 

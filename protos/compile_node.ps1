@@ -16,4 +16,5 @@ protoc.exe `
     --ts_out="$TS_OUT_DIR" `
     --plugin="protoc-gen-grpc=$GRPC_NODE_PLUGIN_PATH" `
     --plugin="protoc-gen-ts=$PROTOC_GEN_TS_PATH" `
-    ./Metro.proto
+    ./loco.proto `
+    ./Router.proto

@@ -7,7 +7,7 @@ module.exports = async (station) => {
   }
 
   station.link().to(greeter).catch(_.noop)
-  rst = await station.hold(greeter)
+  const rst = await station.hold(greeter)
 
   station.log(rst)
   station.close()

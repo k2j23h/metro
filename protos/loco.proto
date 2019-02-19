@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package metro;
+
+message Station {
+    // flow id
+    string id = 1;
+    string name = 2;
+    string image = 3;
+}
+
+message Status {
+    int32 code = 1;
+}

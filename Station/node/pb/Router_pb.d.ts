@@ -1,35 +1,8 @@
 // package: metro
-// file: Metro.proto
+// file: Router.proto
 
 import * as jspb from "google-protobuf";
-
-export class Station extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
-
-  getName(): string;
-  setName(value: string): void;
-
-  getImage(): string;
-  setImage(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): Station.AsObject;
-  static toObject(includeInstance: boolean, msg: Station): Station.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Station, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): Station;
-  static deserializeBinaryFromReader(message: Station, reader: jspb.BinaryReader): Station;
-}
-
-export namespace Station {
-  export type AsObject = {
-    id: string,
-    name: string,
-    image: string,
-  }
-}
+import * as loco_pb from "./loco_pb";
 
 export class Token extends jspb.Message {
   getId(): string;
@@ -51,31 +24,11 @@ export namespace Token {
   }
 }
 
-export class Status extends jspb.Message {
-  getCode(): number;
-  setCode(value: number): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): Status.AsObject;
-  static toObject(includeInstance: boolean, msg: Status): Status.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Status, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): Status;
-  static deserializeBinaryFromReader(message: Status, reader: jspb.BinaryReader): Status;
-}
-
-export namespace Status {
-  export type AsObject = {
-    code: number,
-  }
-}
-
 export class StartRequest extends jspb.Message {
   hasStation(): boolean;
   clearStation(): void;
-  getStation(): Station | undefined;
-  setStation(value?: Station): void;
+  getStation(): loco_pb.Station | undefined;
+  setStation(value?: loco_pb.Station): void;
 
   getUserid(): string;
   setUserid(value: string): void;
@@ -92,7 +45,7 @@ export class StartRequest extends jspb.Message {
 
 export namespace StartRequest {
   export type AsObject = {
-    station?: Station.AsObject,
+    station?: loco_pb.Station.AsObject,
     userid: string,
   }
 }
@@ -105,13 +58,13 @@ export class LinkRequest extends jspb.Message {
 
   hasSrc(): boolean;
   clearSrc(): void;
-  getSrc(): Station | undefined;
-  setSrc(value?: Station): void;
+  getSrc(): loco_pb.Station | undefined;
+  setSrc(value?: loco_pb.Station): void;
 
   hasDst(): boolean;
   clearDst(): void;
-  getDst(): Station | undefined;
-  setDst(value?: Station): void;
+  getDst(): loco_pb.Station | undefined;
+  setDst(value?: loco_pb.Station): void;
 
   getMessage(): string;
   setMessage(value: string): void;
@@ -129,8 +82,8 @@ export class LinkRequest extends jspb.Message {
 export namespace LinkRequest {
   export type AsObject = {
     token?: Token.AsObject,
-    src?: Station.AsObject,
-    dst?: Station.AsObject,
+    src?: loco_pb.Station.AsObject,
+    dst?: loco_pb.Station.AsObject,
     message: string,
   }
 }
@@ -143,13 +96,13 @@ export class BlockRequest extends jspb.Message {
 
   hasSrc(): boolean;
   clearSrc(): void;
-  getSrc(): Station | undefined;
-  setSrc(value?: Station): void;
+  getSrc(): loco_pb.Station | undefined;
+  setSrc(value?: loco_pb.Station): void;
 
   hasDst(): boolean;
   clearDst(): void;
-  getDst(): Station | undefined;
-  setDst(value?: Station): void;
+  getDst(): loco_pb.Station | undefined;
+  setDst(value?: loco_pb.Station): void;
 
   getMessage(): string;
   setMessage(value: string): void;
@@ -167,8 +120,8 @@ export class BlockRequest extends jspb.Message {
 export namespace BlockRequest {
   export type AsObject = {
     token?: Token.AsObject,
-    src?: Station.AsObject,
-    dst?: Station.AsObject,
+    src?: loco_pb.Station.AsObject,
+    dst?: loco_pb.Station.AsObject,
     message: string,
   }
 }
@@ -181,13 +134,13 @@ export class TransmitRequest extends jspb.Message {
 
   hasSrc(): boolean;
   clearSrc(): void;
-  getSrc(): Station | undefined;
-  setSrc(value?: Station): void;
+  getSrc(): loco_pb.Station | undefined;
+  setSrc(value?: loco_pb.Station): void;
 
   hasDst(): boolean;
   clearDst(): void;
-  getDst(): Station | undefined;
-  setDst(value?: Station): void;
+  getDst(): loco_pb.Station | undefined;
+  setDst(value?: loco_pb.Station): void;
 
   getMessage(): string;
   setMessage(value: string): void;
@@ -205,8 +158,8 @@ export class TransmitRequest extends jspb.Message {
 export namespace TransmitRequest {
   export type AsObject = {
     token?: Token.AsObject,
-    src?: Station.AsObject,
-    dst?: Station.AsObject,
+    src?: loco_pb.Station.AsObject,
+    dst?: loco_pb.Station.AsObject,
     message: string,
   }
 }
@@ -214,13 +167,13 @@ export namespace TransmitRequest {
 export class Signal extends jspb.Message {
   hasSrc(): boolean;
   clearSrc(): void;
-  getSrc(): Station | undefined;
-  setSrc(value?: Station): void;
+  getSrc(): loco_pb.Station | undefined;
+  setSrc(value?: loco_pb.Station): void;
 
   hasDst(): boolean;
   clearDst(): void;
-  getDst(): Station | undefined;
-  setDst(value?: Station): void;
+  getDst(): loco_pb.Station | undefined;
+  setDst(value?: loco_pb.Station): void;
 
   getMessage(): string;
   setMessage(value: string): void;
@@ -240,8 +193,8 @@ export class Signal extends jspb.Message {
 
 export namespace Signal {
   export type AsObject = {
-    src?: Station.AsObject,
-    dst?: Station.AsObject,
+    src?: loco_pb.Station.AsObject,
+    dst?: loco_pb.Station.AsObject,
     message: string,
     control: Signal.Control,
   }

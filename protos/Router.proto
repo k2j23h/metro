@@ -2,7 +2,9 @@ syntax = "proto3";
 
 package metro;
 
-service Metro {
+import "loco.proto";
+
+service Router {
     rpc Start (StartRequest) returns (Status) {};
     rpc Link (LinkRequest) returns (Status) {};
     rpc Block (BlockRequest) returns (Status) {};
@@ -10,20 +12,9 @@ service Metro {
     rpc Listen (Token) returns (stream Signal) {};
 }
 
-message Station {
-    // flow id
-    string id = 1;
-    string name = 2;
-    string image = 3;
-}
-
 message Token {
     // container id
     string id = 1;
-}
-
-message Status {
-    int32 code = 1;
 }
 
 message StartRequest {

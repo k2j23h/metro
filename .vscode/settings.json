@@ -1,5 +1,8 @@
 {
     "eslint.workingDirectories": [
         "./station/node/"
-    ]
+    ],
+    "protoc": {
+        "options": ["--proto_path=${workspaceFolder}/protos"],
+    }
 }

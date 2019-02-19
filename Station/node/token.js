@@ -1,7 +1,7 @@
 const fs = require('fs')
 const _ = require('lodash')
 
-const MetroMessage = require('./pb/Metro_pb')
+const RouterMessage = require('./pb/Router_pb')
 
 /**
  * @summary The `token` required to request to the `Metro`.
@@ -31,7 +31,7 @@ module.exports = (() => {
 
   console.info(`token is ${id}`)
 
-  let rst = new MetroMessage.Token()
+  let rst = new RouterMessage.Token()
   rst.setId(id)
 
   return rst

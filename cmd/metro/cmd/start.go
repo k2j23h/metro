@@ -52,7 +52,7 @@ var startCmd = &cobra.Command{
 			log.Fatalf("Failed to connect Metro server: %v", err)
 		}
 		defer conn.Close()
-		cli := metro.NewMetroClient(conn)
+		cli := metro.NewRouterClient(conn)
 
 		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 		defer cancel()

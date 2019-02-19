@@ -2,8 +2,9 @@ const EventEmitter = require('events')
 const _ = require('lodash')
 
 const StationDescriptor = require('./StationDescripter')
-const MetroMessage = require('./pb/Metro_pb')
-const MetroClient = require('./MetroClient')
+const LocoMessage = require('./pb/loco_pb')
+const RouterMessage = require('./pb/Router_pb')
+const RouterClient = require('./RouterClient')
 const token = require('./token')
 
 module.exports = class Station {
@@ -23,7 +24,7 @@ module.exports = class Station {
       blocked: new Map()
     }
     this._station = (() => {
-      let st = new MetroMessage.Station()
+      let st = new LocoMessage.Station()
       st.setId(flowID)
       st.setName(name)
       return st
@@ -72,17 +73,17 @@ module.exports = class Station {
      * - The specified `Station` will be created if it does not exist.
      */
     const to = async ({ name, image }) => {
-      let dst = new MetroMessage.Station()
+      let dst = new LocoMessage.Station()
       dst.setName(name)
       dst.setImage(image)
 
-      let req = new MetroMessage.LinkRequest()
+      let req = new RouterMessage.LinkRequest()
       req.setToken(token)
       req.setSrc(this._station)
       req.setDst(dst)
       req.setMessage(msg)
 
-      const res = await MetroClient.link().sendMessage(req).catch(_.noop)
+      const res = await RouterClient.link().sendMessage(req).catch(_.noop)
       const code = res.getCode()
       switch (code) {
         case 200: break
@@ -118,17 +119,17 @@ module.exports = class Station {
      * - The specified `Station` will be created if it does not exist.
      */
     const from = async ({ name, image }) => {
-      let dst = new MetroMessage.Station()
+      let dst = new LocoMessage.Station()
       dst.setName(name)
       dst.setImage(image)
 
-      let req = new MetroMessage.BlockRequest()
+      let req = new RouterMessage.BlockRequest()
       req.setToken(token)
       req.setSrc(this._station)
       req.setDst(dst)
       req.setMessage(msg)
 
-      const res = await MetroClient.block().sendMessage(req).catch(_.noop)
+      const res = await RouterClient.block().sendMessage(req).catch(_.noop)
       const code = res.getCode()
       switch (code) {
         case 200: break
@@ -167,17 +168,17 @@ module.exports = class Station {
      * - The signal will be ignored if the the specified `Station` is not exists.
      */
     const to = async ({ name, image }) => {
-      let dst = new MetroMessage.Station()
+      let dst = new LocoMessage.Station()
       dst.setName(name)
       dst.setImage(image)
 
-      let req = new MetroMessage.TransmitRequest()
+      let req = new RouterMessage.TransmitRequest()
       req.setToken(token)
       req.setSrc(this._station)
       req.setDst(dst)
       req.setMessage(msg)
 
-      const res = await MetroClient.transmit().sendMessage(req).catch(_.noop)
+      const res = await RouterClient.transmit().sendMessage(req).catch(_.noop)
       const code = res.getCode()
       switch (code) {
         case 200: break
@@ -252,6 +253,29 @@ module.exports = class Station {
   }
 
   /**
+   * @summary Close the `Station`
+   * @description Close the `Station` and emits `closed` event. If you want to listen, obviously,
+   * should subscribe listener before close.
+   */
+  close () {
+    this._isClosed = true
+    this._internal_emitter.emit('closed')
+    this.log('station closed')
+  }
+
+  get isClosed () {
+    return this._isClosed
+  }
+
+  log (message) {
+    console.log(`${this._fID} ${message}`)
+  }
+
+  //
+  // helpers
+  //
+
+  /**
    * @summary Holds all messages include `LINK` until `BLOCK` arrives.
    * @param {StationDescriptor} station
    *
@@ -270,24 +294,5 @@ module.exports = class Station {
         resolve(msgs)
       })
     })
-  }
-
-  /**
-   * @summary Close the `Station`
-   * @description Close the `Station` and emits `closed` event. If you want to listen, obviously,
-   * should subscribe listener before close.
-   */
-  close () {
-    this._isClosed = true
-    this._internal_emitter.emit('closed')
-    this.log('station closed')
-  }
-
-  get isClosed () {
-    return this._isClosed
-  }
-
-  log (message) {
-    console.log(`${this._fID} ${message}`)
   }
 }

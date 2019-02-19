@@ -19,9 +19,7 @@ module.exports = (less) => {
         rst = JSON.stringify(rst)
       }
 
-      from.msg = rst
-
-      station.block(from).catch(_.noop)
+      station.block(rst).from(from).catch(_.noop)
       station.close()
     }
 

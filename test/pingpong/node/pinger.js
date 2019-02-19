@@ -20,7 +20,7 @@ module.exports = async (station) => {
         ping()
     })
 
-    station.link(ponger).catch(_.noop)
+    station.link().to(ponger).catch(_.noop)
 
     let ping = ()=>{
         station.log('ping')

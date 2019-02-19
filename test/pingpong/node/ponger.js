@@ -20,7 +20,7 @@ module.exports = async (station) => {
         } 
     })
     
-    station.link(pinger).catch(_.noop)
+    // station.link(pinger).catch(_.noop)
 
     let pong = ()=>{
         station.log('pong')

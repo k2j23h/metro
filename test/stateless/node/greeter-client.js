@@ -6,7 +6,7 @@ module.exports = async (station) => {
     image: 'greeter-server:latest'
   }
 
-  station.link(greeter).catch(_.noop)
+  station.link().to(greeter).catch(_.noop)
   rst = await station.hold(greeter)
 
   station.log(rst)

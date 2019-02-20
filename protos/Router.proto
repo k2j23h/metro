@@ -17,12 +17,6 @@ message Token {
     string id = 1;
 }
 
-message StartRequest {
-    // required(image)
-    Station station = 2;
-    string userID = 3;
-}
-
 message LinkRequest {
     Token token = 1;
     // required(id, name)

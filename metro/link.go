@@ -8,7 +8,7 @@ import (
 )
 
 // Link connects two stations between caller and requested station
-func (h *ServerHandle) Link(ctx context.Context, in *LinkRequest) (*Status, error) {
+func (h *RouterHandle) Link(ctx context.Context, in *LinkRequest) (*Status, error) {
 	var (
 		status = &Status{Code: code.StatusOK}
 		token  = in.GetToken()

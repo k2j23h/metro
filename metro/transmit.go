@@ -18,7 +18,7 @@ func (desc *instDesc) transmit(signal Signal) error {
 }
 
 // Transmit deliver messages to other server or Metro through Metro server steram
-func (h *ServerHandle) Transmit(ctx context.Context, in *TransmitRequest) (*Status, error) {
+func (h *RouterHandle) Transmit(ctx context.Context, in *TransmitRequest) (*Status, error) {
 	var (
 		status = &Status{Code: code.StatusOK}
 		token  = in.GetToken()

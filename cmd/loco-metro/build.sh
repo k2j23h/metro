@@ -2,9 +2,9 @@
 
 graper='github\.\|google\.\|golang\.\|gopkg\.'
 go_path=$(go env | grep -m1 GOPATH= | cut -d "\"" -f 2)
-loco_metro_cli_path=$go_path/src/locomotes/metro/
+loco_metro_src_path=$go_path/src/locomotes/metro/
 
-deps=$(go list -f '{{ join .Deps "\n" }}' $loco_metro_cli_path | grep $graper)
+deps=$(go list -f '{{ join .Deps "\n" }}' $loco_metro_src_path | grep $graper)
 deps+=" "$(go list -f '{{ join .Deps "\n" }}' ./cmd/ | grep $graper)
 deps=$(echo $deps | sed 's/ /,/g')
 
@@ -17,7 +17,7 @@ do
 done
 
 mkdir -p ./temp/locomotes/metro
-rsync -a $loco_metro_cli_path/ ./temp/locomotes/metro
+rsync -a $loco_metro_src_path/ ./temp/locomotes/metro
 
 docker build \
     -t loco-metro:latest .

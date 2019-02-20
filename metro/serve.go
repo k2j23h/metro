@@ -53,10 +53,11 @@ func Serve(opt *ServeOptions) {
 	}
 
 	s := grpc.NewServer()
-	RegisterRouterServer(s, &ServerHandle{})
+	RegisterRouterServer(s, &RouterHandle{})
+	RegisterCtlServer(s, &CtlHandle{})
 
 	reflection.Register(s)
-	log.WithFields(serveOptFields).Info("starting the Router server")
+	log.WithFields(serveOptFields).Info("starting the Metro server")
 	if err := s.Serve(lis); err != nil {
 		log.WithFields(serveOptFields).Fatalf("failed to serve: %v", err)
 	}

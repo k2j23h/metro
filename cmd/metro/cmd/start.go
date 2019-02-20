@@ -17,10 +17,9 @@ package cmd
 import (
 	"context"
 	"errors"
+	"locomotes/cmd/metro/metro"
 	"strings"
 	"time"
-
-	"locomotes/metro"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -52,7 +51,7 @@ var startCmd = &cobra.Command{
 			log.Fatalf("Failed to connect Metro server: %v", err)
 		}
 		defer conn.Close()
-		cli := metro.NewRouterClient(conn)
+		cli := metro.NewCtlClient(conn)
 
 		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 		defer cancel()

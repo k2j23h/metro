@@ -1,4 +1,4 @@
-// Copyright © 2018 NAME HERE <EMAIL ADDRESS>
+// Copyright © 2019 NAME HERE <EMAIL ADDRESS>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,26 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package cmd
+package main
 
-import (
-	"locomotes/metro"
+import "locomotes/cmd/loco-metro/cmd"
 
-	"github.com/spf13/cobra"
-)
-
-// serveCmd represents the serve command
-var serveCmd = &cobra.Command{
-	Use:   "serve",
-	Short: "Serving Metro server",
-	Run: func(cmd *cobra.Command, args []string) {
-		metro.Serve(&metro.ServeOptions{
-			Host: serverHost,
-			Port: serverPort,
-		})
-	},
-}
-
-func init() {
-	rootCmd.AddCommand(serveCmd)
+func main() {
+	cmd.Execute()
 }

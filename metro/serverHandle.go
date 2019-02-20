@@ -1,4 +1,7 @@
 package metro
 
-// ServerHandle is handle of GRPC MetroServer
-type ServerHandle struct{}
+// RouterHandle is handle of GRPC RouterService
+type RouterHandle struct{}
+
+// CtlHandle is handle of GRPC CtlService
+type CtlHandle struct{}

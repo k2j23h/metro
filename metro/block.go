@@ -8,7 +8,7 @@ import (
 )
 
 // Block prevent transmiting signal to src from dst
-func (h *ServerHandle) Block(ctx context.Context, in *BlockRequest) (*Status, error) {
+func (h *RouterHandle) Block(ctx context.Context, in *BlockRequest) (*Status, error) {
 	var (
 		status = &Status{Code: code.StatusOK}
 		token  = in.GetToken()

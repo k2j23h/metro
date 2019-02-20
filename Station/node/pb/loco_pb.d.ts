@@ -51,3 +51,29 @@ export namespace Status {
   }
 }
 
+export class StartRequest extends jspb.Message {
+  hasStation(): boolean;
+  clearStation(): void;
+  getStation(): Station | undefined;
+  setStation(value?: Station): void;
+
+  getUserid(): string;
+  setUserid(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): StartRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: StartRequest): StartRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: StartRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): StartRequest;
+  static deserializeBinaryFromReader(message: StartRequest, reader: jspb.BinaryReader): StartRequest;
+}
+
+export namespace StartRequest {
+  export type AsObject = {
+    station?: Station.AsObject,
+    userid: string,
+  }
+}
+

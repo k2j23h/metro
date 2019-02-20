@@ -39,14 +39,14 @@ function deserialize_metro_Signal(buffer_arg) {
 }
 
 function serialize_metro_StartRequest(arg) {
-  if (!(arg instanceof Router_pb.StartRequest)) {
+  if (!(arg instanceof loco_pb.StartRequest)) {
     throw new Error('Expected argument of type metro.StartRequest');
   }
   return new Buffer(arg.serializeBinary());
 }
 
 function deserialize_metro_StartRequest(buffer_arg) {
-  return Router_pb.StartRequest.deserializeBinary(new Uint8Array(buffer_arg));
+  return loco_pb.StartRequest.deserializeBinary(new Uint8Array(buffer_arg));
 }
 
 function serialize_metro_Status(arg) {
@@ -88,7 +88,7 @@ var RouterService = exports.RouterService = {
     path: '/metro.Router/Start',
     requestStream: false,
     responseStream: false,
-    requestType: Router_pb.StartRequest,
+    requestType: loco_pb.StartRequest,
     responseType: loco_pb.Status,
     requestSerialize: serialize_metro_StartRequest,
     requestDeserialize: deserialize_metro_StartRequest,

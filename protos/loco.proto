@@ -12,3 +12,9 @@ message Station {
 message Status {
     int32 code = 1;
 }
+
+message StartRequest {
+    // required(image)
+    Station station = 2;
+    string userID = 3;
+}

@@ -23,8 +23,7 @@ func (desc *instDesc) start(name string) (string, error) {
 	return station.GetId(), nil
 }
 
-// Start creates entry point Station
-func (h *ServerHandle) Start(ctx context.Context, in *StartRequest) (*Status, error) {
+func startHandler(ctx context.Context, in *StartRequest) (*Status, error) {
 	var (
 		status  = &Status{Code: code.StatusOK}
 		station = in.GetStation()
@@ -71,4 +70,14 @@ func (h *ServerHandle) Start(ctx context.Context, in *StartRequest) (*Status, er
 	}
 
 	return status, nil
+}
+
+// Start creates entry point Station
+func (h *RouterHandle) Start(ctx context.Context, in *StartRequest) (*Status, error) {
+	return startHandler(ctx, in)
+}
+
+// Start creates entry point Station
+func (h *CtlHandle) Start(ctx context.Context, in *StartRequest) (*Status, error) {
+	return startHandler(ctx, in)
 }

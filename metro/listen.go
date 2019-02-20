@@ -5,7 +5,7 @@ import (
 )
 
 // Listen messages come from other stations or Metro through Metro server stream
-func (h *ServerHandle) Listen(token *Token, stream Router_ListenServer) error {
+func (h *RouterHandle) Listen(token *Token, stream Router_ListenServer) error {
 	desc, ok := token.getDesc()
 	if !ok {
 		log.Warn(errInvTkn)

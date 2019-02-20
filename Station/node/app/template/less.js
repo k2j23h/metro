@@ -2,31 +2,21 @@ const util = require('util')
 
 const _ = require('lodash')
 
+const accept = require('./accept')
+
 module.exports = (less) => {
-  return async (station) => {
-    let listener
+  return accept(1, async (station, msg, from) => {
+    let rst
 
-    const invoke = async (msg, from) => {
-      station.log('invoking..')
-      listener = _.noop
-      let rst
+    if (less instanceof Promise) {
+      rst = await less(msg, from)
+    } else rst = less(msg, from)
 
-      if (less instanceof Promise) {
-        rst = await less(msg, from)
-      } else rst = less(msg, from)
-
-      if (!_.isString(rst)) {
-        rst = JSON.stringify(rst)
-      }
-
-      station.block(rst).from(from).catch(_.noop)
-      station.close()
+    if (!_.isString(rst)) {
+      rst = JSON.stringify(rst)
     }
 
-    listener = invoke
-
-    station.on('linked', (msg, from) => {
-      listener(msg, from)
-    })
-  }
+    station.block(rst).from(from).catch(_.noop)
+    station.close()
+  })
 }

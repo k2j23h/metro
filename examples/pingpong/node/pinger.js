@@ -1,8 +1,5 @@
 const _ = require('lodash')
 
-/**
- * @param {import('../../../station/js/CurrentStation')} station
- */
 module.exports = async (station) => {
   const ponger = {
     name: 'ponger',

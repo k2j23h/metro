@@ -72,12 +72,12 @@ func startHandler(ctx context.Context, in *StartRequest) (*Status, error) {
 	return status, nil
 }
 
-// Start creates entry point Station
+// Start creates and run entry point Station
 func (h *RouterHandle) Start(ctx context.Context, in *StartRequest) (*Status, error) {
 	return startHandler(ctx, in)
 }
 
-// Start creates entry point Station
+// Start creates and run entry point Station
 func (h *CtlHandle) Start(ctx context.Context, in *StartRequest) (*Status, error) {
 	return startHandler(ctx, in)
 }

@@ -1,4 +1,4 @@
-// Copyright © 2018 NAME HERE <EMAIL ADDRESS>
+// Copyright © 2019 NAME HERE <EMAIL ADDRESS>
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ import (
 	"context"
 	"errors"
 	"locomotes/cmd/metro/metro"
-	"strings"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -26,10 +25,10 @@ import (
 	"google.golang.org/grpc"
 )
 
-// startCmd represents the start command
-var startCmd = &cobra.Command{
-	Use:   "start IMAGE",
-	Short: "Start creates and run Station entry point",
+// loadCmd represents the load command
+var loadCmd = &cobra.Command{
+	Use:   "load",
+	Short: "Load creates Station",
 	Args: func(cmd *cobra.Command, args []string) error {
 		if len(args) < 1 {
 			return errors.New("requires at least one arg")
@@ -38,9 +37,7 @@ var startCmd = &cobra.Command{
 		return nil
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		s := strings.Split(args[0], "~")
-		image := s[0]
-		name := s[1]
+		image := args[0]
 
 		conn, err := grpc.Dial(getServerAddress(), grpc.WithInsecure())
 		if err != nil {
@@ -51,23 +48,21 @@ var startCmd = &cobra.Command{
 
 		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 		defer cancel()
-		res, err := cli.Start(ctx, &metro.StartRequest{
+		res, err := cli.Load(ctx, &metro.LoadRequest{
 			Station: &metro.Station{
-				Name:  name,
 				Image: image,
 			},
 			UserID: username,
 		})
 		if err != nil {
-			log.Fatalf("Failed to start: %v", err)
+			log.Fatalf("Failed to load: %v", err)
 		}
 
 		switch code := res.GetCode(); code {
 		case 200:
 			log.WithFields(log.Fields{
-				"name":  name,
 				"image": image,
-			}).Info("Started new entry point Station")
+			}).Info("Loaded new Station")
 		case 404:
 			log.WithField("image", image).Warn("No such image")
 		default:
@@ -77,5 +72,6 @@ var startCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(startCmd)
+	rootCmd.AddCommand(loadCmd)
+
 }

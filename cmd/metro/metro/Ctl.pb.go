@@ -23,6 +23,57 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
+type LoadRequest struct {
+	// required(image)
+	Station              *Station `protobuf:"bytes,2,opt,name=station,proto3" json:"station,omitempty"`
+	UserID               string   `protobuf:"bytes,3,opt,name=userID,proto3" json:"userID,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *LoadRequest) Reset()         { *m = LoadRequest{} }
+func (m *LoadRequest) String() string { return proto.CompactTextString(m) }
+func (*LoadRequest) ProtoMessage()    {}
+func (*LoadRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_Ctl_2a36bed3d2b65f63, []int{0}
+}
+func (m *LoadRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_LoadRequest.Unmarshal(m, b)
+}
+func (m *LoadRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_LoadRequest.Marshal(b, m, deterministic)
+}
+func (dst *LoadRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_LoadRequest.Merge(dst, src)
+}
+func (m *LoadRequest) XXX_Size() int {
+	return xxx_messageInfo_LoadRequest.Size(m)
+}
+func (m *LoadRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_LoadRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_LoadRequest proto.InternalMessageInfo
+
+func (m *LoadRequest) GetStation() *Station {
+	if m != nil {
+		return m.Station
+	}
+	return nil
+}
+
+func (m *LoadRequest) GetUserID() string {
+	if m != nil {
+		return m.UserID
+	}
+	return ""
+}
+
+func init() {
+	proto.RegisterType((*LoadRequest)(nil), "metro.LoadRequest")
+}
+
 // Reference imports to suppress errors if they are not otherwise used.
 var _ context.Context
 var _ grpc.ClientConn
@@ -36,6 +87,7 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type CtlClient interface {
 	Start(ctx context.Context, in *StartRequest, opts ...grpc.CallOption) (*Status, error)
+	Load(ctx context.Context, in *LoadRequest, opts ...grpc.CallOption) (*Status, error)
 }
 
 type ctlClient struct {
@@ -55,9 +107,19 @@ func (c *ctlClient) Start(ctx context.Context, in *StartRequest, opts ...grpc.Ca
 	return out, nil
 }
 
+func (c *ctlClient) Load(ctx context.Context, in *LoadRequest, opts ...grpc.CallOption) (*Status, error) {
+	out := new(Status)
+	err := c.cc.Invoke(ctx, "/metro.Ctl/Load", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CtlServer is the server API for Ctl service.
 type CtlServer interface {
 	Start(context.Context, *StartRequest) (*Status, error)
+	Load(context.Context, *LoadRequest) (*Status, error)
 }
 
 func RegisterCtlServer(s *grpc.Server, srv CtlServer) {
@@ -82,6 +144,24 @@ func _Ctl_Start_Handler(srv interface{}, ctx context.Context, dec func(interface
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Ctl_Load_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoadRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CtlServer).Load(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/metro.Ctl/Load",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CtlServer).Load(ctx, req.(*LoadRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Ctl_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "metro.Ctl",
 	HandlerType: (*CtlServer)(nil),
@@ -90,19 +170,28 @@ var _Ctl_serviceDesc = grpc.ServiceDesc{
 			MethodName: "Start",
 			Handler:    _Ctl_Start_Handler,
 		},
+		{
+			MethodName: "Load",
+			Handler:    _Ctl_Load_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "Ctl.proto",
 }
 
-func init() { proto.RegisterFile("Ctl.proto", fileDescriptor_Ctl_ee8fe01a513dd9c5) }
+func init() { proto.RegisterFile("Ctl.proto", fileDescriptor_Ctl_2a36bed3d2b65f63) }
 
-var fileDescriptor_Ctl_ee8fe01a513dd9c5 = []byte{
-	// 95 bytes of a gzipped FileDescriptorProto
+var fileDescriptor_Ctl_2a36bed3d2b65f63 = []byte{
+	// 165 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x74, 0x2e, 0xc9, 0xd1,
 	0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0xcd, 0x4d, 0x2d, 0x29, 0xca, 0x97, 0xe2, 0xca, 0xc9,
-	0x4f, 0xce, 0x87, 0x08, 0x19, 0x99, 0x70, 0x31, 0x3b, 0x97, 0xe4, 0x08, 0xe9, 0x72, 0xb1, 0x06,
-	0x97, 0x24, 0x16, 0x95, 0x08, 0x09, 0xeb, 0x81, 0xd5, 0xe8, 0x81, 0x79, 0x41, 0xa9, 0x85, 0xa5,
-	0xa9, 0xc5, 0x25, 0x52, 0xbc, 0x08, 0xc1, 0x92, 0xd2, 0x62, 0x25, 0x86, 0x24, 0x36, 0xb0, 0x66,
-	0x63, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0x75, 0xd0, 0x3b, 0xdf, 0x5c, 0x00, 0x00, 0x00,
+	0x4f, 0xce, 0x87, 0x08, 0x29, 0xf9, 0x73, 0x71, 0xfb, 0xe4, 0x27, 0xa6, 0x04, 0xa5, 0x16, 0x96,
+	0xa6, 0x16, 0x97, 0x08, 0x69, 0x70, 0xb1, 0x17, 0x97, 0x24, 0x96, 0x64, 0xe6, 0xe7, 0x49, 0x30,
+	0x29, 0x30, 0x6a, 0x70, 0x1b, 0xf1, 0xe9, 0x81, 0xf5, 0xe8, 0x05, 0x43, 0x44, 0x83, 0x60, 0xd2,
+	0x42, 0x62, 0x5c, 0x6c, 0xa5, 0xc5, 0xa9, 0x45, 0x9e, 0x2e, 0x12, 0xcc, 0x0a, 0x8c, 0x1a, 0x9c,
+	0x41, 0x50, 0x9e, 0x51, 0x22, 0x17, 0xb3, 0x73, 0x49, 0x8e, 0x90, 0x2e, 0x17, 0x6b, 0x70, 0x49,
+	0x62, 0x51, 0x89, 0x90, 0x30, 0xc2, 0x80, 0xa2, 0x12, 0xa8, 0x35, 0x52, 0xbc, 0x48, 0xa6, 0x96,
+	0x16, 0x2b, 0x31, 0x08, 0x69, 0x73, 0xb1, 0x80, 0x9c, 0x21, 0x24, 0x04, 0x95, 0x40, 0x72, 0x13,
+	0x86, 0xe2, 0x24, 0x36, 0xb0, 0xd3, 0x8d, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0x93, 0x27, 0x3a,
+	0xe7, 0xda, 0x00, 0x00, 0x00,
 }

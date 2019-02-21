@@ -6,4 +6,11 @@ import "loco.proto";
 
 service Ctl {
     rpc Start (StartRequest) returns (Status) {};
+    rpc Load (LoadRequest) returns (Status) {};
+}
+
+message LoadRequest {
+    // required(image)
+    Station station = 2;
+    string userID = 3;
 }

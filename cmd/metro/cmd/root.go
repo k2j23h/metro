@@ -11,6 +11,7 @@ import (
 var (
 	serverHost string
 	serverPort uint16
+	username   string
 )
 
 var cfgFile string
@@ -34,6 +35,7 @@ func Execute() {
 func init() {
 	rootCmd.Flags().StringVar(&serverHost, "host", "0.0.0.0", "Host string or IP that the Metro server serving")
 	rootCmd.Flags().Uint16Var(&serverPort, "port", 50051, "Port number that the Metro server exposing")
+	rootCmd.Flags().StringVarP(&username, "user", "u", "metro", "username")
 }
 
 func getServerAddress() string {

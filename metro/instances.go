@@ -47,7 +47,7 @@ func (desc *instDesc) getBody() (instBody, bool) {
 	return body, ok
 }
 
-func createInst(image string) (string, error) {
+func createInstance(image string) (string, error) {
 	res, err := DckrCli.ContainerCreate(context.Background(), &container.Config{
 		Image: image,
 		Env: []string{
@@ -62,12 +62,19 @@ func createInst(image string) (string, error) {
 		return "", err
 	}
 
-	err = DckrCli.ContainerStart(
-		context.Background(), res.ID,
-		types.ContainerStartOptions{},
-	)
+	// err = DckrCli.ContainerStart(
+	// 	context.Background(), res.ID,
+	// 	types.ContainerStartOptions{},
+	// )
 
 	return res.ID, err
+}
+
+func startInst(id string) error {
+	return DckrCli.ContainerStart(
+		context.Background(), id,
+		types.ContainerStartOptions{},
+	)
 }
 
 func newInstance(desc *instDesc, sig *Signal) error {
@@ -92,7 +99,7 @@ func newInstance(desc *instDesc, sig *Signal) error {
 
 	pool[desc.image] = instBody{transmit: tc}
 
-	contID, err := createInst(desc.image)
+	contID, err := createInstance(desc.image)
 
 	if err != nil {
 		delete(pool, desc.image)
@@ -107,6 +114,11 @@ func newInstance(desc *instDesc, sig *Signal) error {
 	body, _ := pool[desc.image]
 	body.contID = contID
 	containers[contID] = *desc
+
+	err = startInst(contID)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

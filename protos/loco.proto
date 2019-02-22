@@ -17,4 +17,5 @@ message StartRequest {
     // required(image)
     Station station = 2;
     string userID = 3;
+    string message = 4;
 }

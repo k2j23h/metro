@@ -6,20 +6,19 @@ module.exports = async (station) => {
     image: 'pinger:latest'
   }
 
-  let cnt = 0
-
-  station.grab(pinger).signal((msg, from) => {
-    station.log(`${msg} from ${from.name}`)
-    pong()
-    if (++cnt === 3) {
-      station.close()
-    }
-  })
-
   let pong = () => {
     station.log('pong')
     setTimeout(() => {
       station.signal('ponged').to(pinger).catch(_.noop)
     }, 1000)
   }
+
+  station.grab(pinger).signal((msg, from) => {
+    station.log(`${msg} from ${from.name}`)
+    pong()
+  })
+
+  station.grab(pinger).blocked((msg, from) => {
+    station.close()
+  })
 }

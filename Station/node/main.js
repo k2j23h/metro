@@ -21,7 +21,15 @@ function signalHandler (res) {
   const start = () => {
     let body = create()
     body.station.log('new station is open')
-    app(body.station).catch(_.nopp)
+
+    let msg = res.getMessage()
+    if (msg) {
+      try {
+        msg = JSON.parse(msg)
+      } catch (e) {}
+    }
+
+    app(body.station, msg || []).catch(_.nopp)
     return body
   }
 

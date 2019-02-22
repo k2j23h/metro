@@ -55,7 +55,7 @@ func (x Signal_Control) String() string {
 	return proto.EnumName(Signal_Control_name, int32(x))
 }
 func (Signal_Control) EnumDescriptor() ([]byte, []int) {
-	return fileDescriptor_Router_90344a9551075d76, []int{4, 0}
+	return fileDescriptor_Router_bd46ddeb45611bed, []int{4, 0}
 }
 
 type Token struct {
@@ -70,7 +70,7 @@ func (m *Token) Reset()         { *m = Token{} }
 func (m *Token) String() string { return proto.CompactTextString(m) }
 func (*Token) ProtoMessage()    {}
 func (*Token) Descriptor() ([]byte, []int) {
-	return fileDescriptor_Router_90344a9551075d76, []int{0}
+	return fileDescriptor_Router_bd46ddeb45611bed, []int{0}
 }
 func (m *Token) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Token.Unmarshal(m, b)
@@ -113,7 +113,7 @@ func (m *LinkRequest) Reset()         { *m = LinkRequest{} }
 func (m *LinkRequest) String() string { return proto.CompactTextString(m) }
 func (*LinkRequest) ProtoMessage()    {}
 func (*LinkRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_Router_90344a9551075d76, []int{1}
+	return fileDescriptor_Router_bd46ddeb45611bed, []int{1}
 }
 func (m *LinkRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_LinkRequest.Unmarshal(m, b)
@@ -177,7 +177,7 @@ func (m *BlockRequest) Reset()         { *m = BlockRequest{} }
 func (m *BlockRequest) String() string { return proto.CompactTextString(m) }
 func (*BlockRequest) ProtoMessage()    {}
 func (*BlockRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_Router_90344a9551075d76, []int{2}
+	return fileDescriptor_Router_bd46ddeb45611bed, []int{2}
 }
 func (m *BlockRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_BlockRequest.Unmarshal(m, b)
@@ -241,7 +241,7 @@ func (m *TransmitRequest) Reset()         { *m = TransmitRequest{} }
 func (m *TransmitRequest) String() string { return proto.CompactTextString(m) }
 func (*TransmitRequest) ProtoMessage()    {}
 func (*TransmitRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_Router_90344a9551075d76, []int{3}
+	return fileDescriptor_Router_bd46ddeb45611bed, []int{3}
 }
 func (m *TransmitRequest) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_TransmitRequest.Unmarshal(m, b)
@@ -289,15 +289,16 @@ func (m *TransmitRequest) GetMessage() string {
 	return ""
 }
 
-// required                 src dst msg
-// for control=START,        n   y   n
-// for control=LINKED,       y   y   n
-// for control=MESSAGE       y   y   o
+// required                 src dst
+// for control=START,        o   y
+// for control=LINKED,       y   y
+// for control=MESSAGE       y   y
 type Signal struct {
 	// required(id, name, image)
 	Src *Station `protobuf:"bytes,2,opt,name=src,proto3" json:"src,omitempty"`
 	// required(id, name, image)
-	Dst                  *Station       `protobuf:"bytes,3,opt,name=dst,proto3" json:"dst,omitempty"`
+	Dst *Station `protobuf:"bytes,3,opt,name=dst,proto3" json:"dst,omitempty"`
+	// always optional
 	Message              string         `protobuf:"bytes,4,opt,name=message,proto3" json:"message,omitempty"`
 	Control              Signal_Control `protobuf:"varint,5,opt,name=control,proto3,enum=metro.Signal_Control" json:"control,omitempty"`
 	XXX_NoUnkeyedLiteral struct{}       `json:"-"`
@@ -309,7 +310,7 @@ func (m *Signal) Reset()         { *m = Signal{} }
 func (m *Signal) String() string { return proto.CompactTextString(m) }
 func (*Signal) ProtoMessage()    {}
 func (*Signal) Descriptor() ([]byte, []int) {
-	return fileDescriptor_Router_90344a9551075d76, []int{4}
+	return fileDescriptor_Router_bd46ddeb45611bed, []int{4}
 }
 func (m *Signal) XXX_Unmarshal(b []byte) error {
 	return xxx_messageInfo_Signal.Unmarshal(m, b)
@@ -598,9 +599,9 @@ var _Router_serviceDesc = grpc.ServiceDesc{
 	Metadata: "Router.proto",
 }
 
-func init() { proto.RegisterFile("Router.proto", fileDescriptor_Router_90344a9551075d76) }
+func init() { proto.RegisterFile("Router.proto", fileDescriptor_Router_bd46ddeb45611bed) }
 
-var fileDescriptor_Router_90344a9551075d76 = []byte{
+var fileDescriptor_Router_bd46ddeb45611bed = []byte{
 	// 395 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x93, 0xd1, 0x8a, 0xd3, 0x40,
 	0x14, 0x86, 0x3b, 0x69, 0x27, 0xd9, 0x9e, 0x66, 0x6b, 0x38, 0xa2, 0x86, 0xbd, 0x2a, 0xb9, 0x5a,

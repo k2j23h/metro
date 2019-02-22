@@ -7,7 +7,7 @@ import (
 	"golang.org/x/net/context"
 )
 
-func (desc *instDesc) start(name string) (string, error) {
+func (desc *instDesc) start(name string, msg string) (string, error) {
 	station := &Station{
 		Id:   generateID(),
 		Name: name,
@@ -16,6 +16,7 @@ func (desc *instDesc) start(name string) (string, error) {
 	if err := desc.transmit(Signal{
 		Dst:     station,
 		Control: Signal_START,
+		Message: msg,
 	}); err != nil {
 		return "", err
 	}
@@ -54,7 +55,7 @@ func startHandler(ctx context.Context, in *StartRequest) (*Status, error) {
 		logger.Info("new instance is created")
 	}
 
-	flowID, err := desc.start(station.GetName())
+	flowID, err := desc.start(station.GetName(), in.GetMessage())
 
 	switch err {
 	default:

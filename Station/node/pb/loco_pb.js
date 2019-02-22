@@ -400,7 +400,8 @@ proto.metro.StartRequest.prototype.toObject = function(opt_includeInstance) {
 proto.metro.StartRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     station: (f = msg.getStation()) && proto.metro.Station.toObject(includeInstance, f),
-    userid: jspb.Message.getFieldWithDefault(msg, 3, "")
+    userid: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    message: jspb.Message.getFieldWithDefault(msg, 4, "")
   };
 
   if (includeInstance) {
@@ -446,6 +447,10 @@ proto.metro.StartRequest.deserializeBinaryFromReader = function(msg, reader) {
       var value = /** @type {string} */ (reader.readString());
       msg.setUserid(value);
       break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setMessage(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -487,6 +492,13 @@ proto.metro.StartRequest.serializeBinaryToWriter = function(message, writer) {
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getMessage();
+  if (f.length > 0) {
+    writer.writeString(
+      4,
       f
     );
   }
@@ -535,6 +547,21 @@ proto.metro.StartRequest.prototype.getUserid = function() {
 /** @param {string} value */
 proto.metro.StartRequest.prototype.setUserid = function(value) {
   jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional string message = 4;
+ * @return {string}
+ */
+proto.metro.StartRequest.prototype.getMessage = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/** @param {string} value */
+proto.metro.StartRequest.prototype.setMessage = function(value) {
+  jspb.Message.setProto3StringField(this, 4, value);
 };
 
 

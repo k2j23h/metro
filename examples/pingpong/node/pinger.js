@@ -1,16 +1,22 @@
 const _ = require('lodash')
 
-module.exports = async (station) => {
+module.exports = async (station, msg) => {
   const ponger = {
     name: 'ponger',
     image: 'ponger:latest'
   }
 
-  let cnt = 0
+  let cnt = 3
+
+  if (msg.length > 0) {
+    let n = _.toNumber(msg[0])
+    if (!_.isNaN(n)) cnt = n
+  }
 
   station.grab(ponger).signal((msg, from) => {
     station.log(`${msg} from ${from.name}`)
-    if (++cnt === 3) {
+    if (--cnt === 0) {
+      station.block().from(ponger).catch(_.noop)
       station.close()
       return
     }
@@ -26,5 +32,9 @@ module.exports = async (station) => {
     }, 1000)
   }
 
-  ping()
+  if (cnt > 0) {
+    ping()
+  } else {
+    station.close()
+  }
 }

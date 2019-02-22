@@ -41,6 +41,7 @@ var startCmd = &cobra.Command{
 		s := strings.Split(args[0], "~")
 		image := s[0]
 		name := s[1]
+		msgs := args[1:]
 
 		conn, err := grpc.Dial(getServerAddress(), grpc.WithInsecure())
 		if err != nil {
@@ -51,13 +52,20 @@ var startCmd = &cobra.Command{
 
 		ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 		defer cancel()
-		res, err := cli.Start(ctx, &metro.StartRequest{
+
+		req := &metro.StartRequest{
 			Station: &metro.Station{
 				Name:  name,
 				Image: image,
 			},
 			UserID: username,
-		})
+		}
+
+		if len(msgs) > 0 {
+			req.Message = "[" + strings.Join(msgs, ",") + "]"
+		}
+
+		res, err := cli.Start(ctx, req)
 		if err != nil {
 			log.Fatalf("Failed to start: %v", err)
 		}

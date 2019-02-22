@@ -60,6 +60,9 @@ export class StartRequest extends jspb.Message {
   getUserid(): string;
   setUserid(value: string): void;
 
+  getMessage(): string;
+  setMessage(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): StartRequest.AsObject;
   static toObject(includeInstance: boolean, msg: StartRequest): StartRequest.AsObject;
@@ -74,6 +77,7 @@ export namespace StartRequest {
   export type AsObject = {
     station?: Station.AsObject,
     userid: string,
+    message: string,
   }
 }
 

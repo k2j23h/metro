@@ -44,15 +44,16 @@ message TransmitRequest {
     string message = 4;
 }
 
-// required                 src dst msg
-// for control=START,        n   y   n
-// for control=LINKED,       y   y   n
-// for control=MESSAGE       y   y   o
+// required                 src dst
+// for control=START,        o   y
+// for control=LINKED,       y   y
+// for control=MESSAGE       y   y 
 message Signal {
     // required(id, name, image)
     Station src = 2;
     // required(id, name, image)
     Station dst = 3;
+    // always optional
     string message = 4;
     enum Control {
         NOT_USED = 0;

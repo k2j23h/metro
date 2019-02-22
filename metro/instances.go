@@ -70,7 +70,7 @@ func createInstance(image string) (string, error) {
 	return res.ID, err
 }
 
-func startInst(id string) error {
+func startInstance(id string) error {
 	return DckrCli.ContainerStart(
 		context.Background(), id,
 		types.ContainerStartOptions{},
@@ -115,7 +115,7 @@ func newInstance(desc *instDesc, sig *Signal) error {
 	body.contID = contID
 	containers[contID] = *desc
 
-	err = startInst(contID)
+	err = startInstance(contID)
 	if err != nil {
 		return err
 	}

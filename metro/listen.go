@@ -29,7 +29,6 @@ func (h *RouterHandle) Listen(token *Token, stream Router_ListenServer) error {
 		for {
 			select {
 			case <-stream.Context().Done():
-				logger.Info("stops listening")
 				return
 			case sig := <-body.transmit:
 				stream.Send(&sig)

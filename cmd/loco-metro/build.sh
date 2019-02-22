@@ -1,25 +1,44 @@
 #!/usr/bin/env bash
 
-graper='github\.\|google\.\|golang\.\|gopkg\.'
-go_path=$(go env | grep -m1 GOPATH= | cut -d "\"" -f 2)
-loco_metro_src_path=$go_path/src/locomotes/metro/
+#
+# USER DEFINE VARIABLES
+#
+myPkgRootName='locomotes'
+myPkgPath=$myPkgRootName'/cmd/loco-metro'
+graper=$myPkgRootName'\|github\.\|google\.\|golang\.\|gopkg\.'
 
-deps=$(go list -f '{{ join .Deps "\n" }}' $loco_metro_src_path | grep $graper)
-deps+=" "$(go list -f '{{ join .Deps "\n" }}' ./cmd/ | grep $graper)
+#
+# DO NOT TOUCH
+#
+go_path=$(go env | grep -m1 GOPATH= | cut -d "\"" -f 2)
+src_path=$go_path'/src/'$myPkgPath
+dckf_path=$src_path'/Dockerfile'
+
+if [ ! -f  "$dckf_path" ]; then
+    echo "Dockerfile not provided: $dckf_path"
+    exit 1
+fi
+
+tmp_path=$(mktemp -d)
+
+deps=$(go list -f '{{ join .Deps "\n" }}' $src_path | grep $graper)
 deps=$(echo $deps | sed 's/ /,/g')
 
 IFS=',' read -r -a deps <<< "$deps"
 for element in "${deps[@]}"
 do
-    mkdir -p ./temp/$element/
-    rsync -a $go_path/src/$element/ ./temp/$element/
+    mkdir -p $tmp_path/$element/
+    rsync -a $go_path/src/$element/ $tmp_path/$element/
     echo $element" done"
 done
 
-mkdir -p ./temp/locomotes/metro
-rsync -a $loco_metro_src_path/ ./temp/locomotes/metro
+mkdir -p $tmp_path/$myPkgPath
+rsync -a $src_path/* $tmp_path/$myPkgPath
+
+cp $dckf_path $tmp_path/Dockerfile
 
 docker build \
-    -t loco-metro:latest .
+    -t loco-metro:latest \
+    $tmp_path
 
-rm -rf ./temp/
+rm -rf $tmp_path

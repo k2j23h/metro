@@ -1,18 +1,10 @@
 FROM golang:1.11
 
-RUN mkdir -p /go/src/locomotes/cmd/loco-metro \
- && mkdir -p /go/src/locomotes/metro
+COPY . /go/src/.
 
-WORKDIR /go/src/locomotes/cmd/loco-metro
-
-# metro loco-metro will provided by github
-# perhaps...
-COPY ./temp/. /go/src/.
-COPY ./main.go ./main.go
-COPY ./cmd ./cmd
-
-RUN go build -ldflags "-linkmode external -extldflags -static" -a main.go
+RUN go build -ldflags "-linkmode external -extldflags -static" -a \
+    /go/src/locomotes/cmd/loco-metro/main.go
 
 FROM scratch
-COPY --from=0 /go/src/locomotes/cmd/loco-metro/main /loco-metro
+COPY --from=0 /go/main /loco-metro
 ENTRYPOINT [ "/loco-metro" ]

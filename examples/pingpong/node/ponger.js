@@ -1,24 +1,21 @@
 const _ = require('lodash')
 
-module.exports = async (station) => {
-  const pinger = {
-    name: 'pinger',
-    image: 'pinger:latest'
-  }
+const accept = require('./template/accept.js')
 
-  let pong = () => {
+module.exports = accept(1, async (station, msg, from) => {
+  let pong = (dst) => {
     station.log('pong')
     setTimeout(() => {
-      station.signal('ponged').to(pinger).catch(_.noop)
+      station.signal('ponged').to(dst).catch(_.noop)
     }, 1000)
   }
 
-  station.grab(pinger).signal((msg, from) => {
+  station.grab(from).signal((msg, from) => {
     station.log(`${msg} from ${from.name}`)
-    pong()
+    pong(from)
   })
 
-  station.grab(pinger).blocked((msg, from) => {
+  station.grab(from).blocked((msg, from) => {
     station.close()
   })
-}
+})

@@ -1,11 +1,11 @@
 const _ = require('lodash')
 
-module.exports = async (station, msg) => {
-  const ponger = {
-    name: 'ponger',
-    image: 'ponger:latest'
-  }
+const ponger = {
+  name: 'ponger',
+  image: 'ponger:latest'
+}
 
+module.exports = async (station, msg) => {
   let cnt = 3
 
   if (msg.length > 0) {

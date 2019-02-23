@@ -7,10 +7,10 @@ const token = require('./token')
 const flows = require('./flows')
 const app = require('./app/main')
 
-/** @param {import('./pb/Metro_pb').Signal} res */
-function signalHandler (res) {
-  const srcSt = res.getSrc()
-  const dstSt = res.getDst()
+/** @param {import('./pb/Metro_pb').Signal} sig */
+function signalHandler (sig) {
+  const srcSt = sig.getSrc()
+  const dstSt = sig.getDst()
 
   const flowID = dstSt.getId()
   const dstName = dstSt.getName()
@@ -22,7 +22,7 @@ function signalHandler (res) {
     let body = create()
     body.station.log('new station is open')
 
-    let msg = res.getMessage()
+    let msg = sig.getMessage()
     if (msg) {
       try {
         msg = JSON.parse(msg)
@@ -39,7 +39,7 @@ function signalHandler (res) {
     image: st.getImage()
   })
 
-  const ctrl = res.getControl()
+  const ctrl = sig.getControl()
   switch (ctrl) {
     default:
       console.log('unmanaged control flag: ' + ctrl)
@@ -64,7 +64,7 @@ function signalHandler (res) {
 
     case SigCtrl.LINKED: (() => {
       let emitter = isExists ? fetch().emitter : start().emitter
-      emitter.emit('linked', res.getMessage(), toDesc(srcSt))
+      emitter.emit('linked', sig.getMessage(), toDesc(srcSt))
       console.log(Date.now(), 'linked', flowID)
     })(); break
 
@@ -73,7 +73,7 @@ function signalHandler (res) {
         console.warn(Date.now(), 'MSG: not found', flowID)
         return
       }
-      fetch().emitter.emit('signal', res.getMessage(), toDesc(srcSt))
+      fetch().emitter.emit('signal', sig.getMessage(), toDesc(srcSt))
     })(); break
 
     case SigCtrl.BLOCKED: (() => {
@@ -81,7 +81,7 @@ function signalHandler (res) {
         console.warn(Date.now(), 'BLCK: not found', flowID)
         return
       }
-      fetch().emitter.emit('blocked', res.getMessage(), toDesc(srcSt))
+      fetch().emitter.emit('blocked', sig.getMessage(), toDesc(srcSt))
     })(); break
   }
 }

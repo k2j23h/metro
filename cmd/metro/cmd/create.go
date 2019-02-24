@@ -101,7 +101,7 @@ var createCmd = &cobra.Command{
 		check(err)
 
 		createRes, err := cli.ContainerCreate(ctx, &container.Config{
-			Image: "loco-station-node8",
+			Image: "lesomnus/metro-station-node8",
 		}, nil, nil, "")
 		check(err)
 		defer cli.ContainerRemove(ctx, createRes.ID, types.ContainerRemoveOptions{})

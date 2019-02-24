@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/lesomnus/metro/cmd/loco-metro/cmd"
+	"github.com/lesomnus/metro/cmd/metro-server/cmd"
 )
 
 func main() {

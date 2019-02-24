@@ -4,8 +4,8 @@
 # USER DEFINE VARIABLES
 #
 myPkgRootName='github.com/lesomnus/metro'
-myPkgPath=$myPkgRootName'/cmd/loco-metro'
-imageRef='loco-metro:latest'
+myPkgPath=$myPkgRootName'/cmd/metro-server'
+imageRef='metro-server:latest'
 graper='github\.\|google\.\|golang\.\|gopkg\.'
 
 #

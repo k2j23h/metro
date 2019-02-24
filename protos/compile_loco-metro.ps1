@@ -1,4 +1,4 @@
-$METRO_OUT_DIR = "../metro"
+$METRO_OUT_DIR = "../"
 
 protoc.exe `
     --go_out="plugins=grpc:$METRO_OUT_DIR" `

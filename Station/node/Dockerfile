@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 
 COPY "package.json" "package.json"
 
-RUN npm install
+RUN npm install --production
 
 FROM node:8-alpine
 

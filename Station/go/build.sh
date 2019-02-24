@@ -33,13 +33,16 @@ do
     echo $element" done"
 done
 
+mkdir -p $tmp_path/app
+cp $go_path/src/app/main.go $tmp_path/app/main.go
+
 mkdir -p $tmp_path/$myPkgPath
 rsync -a $src_path/* $tmp_path/$myPkgPath
 
 cp $dckf_path $tmp_path/Dockerfile
 
 docker build \
-    -t loco-station-go:latest \
+    -t loco-station-go1.11:latest \
     $tmp_path
 
 rm -rf $tmp_path

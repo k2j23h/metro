@@ -6,7 +6,7 @@ import (
 	"os"
 	"strconv"
 
-	"locomotes/station/go/app"
+	"app"
 	"locomotes/station/go/metro"
 	"locomotes/station/go/types"
 

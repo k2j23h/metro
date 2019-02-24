@@ -3,9 +3,10 @@
 #
 # USER DEFINE VARIABLES
 #
-myPkgRootName='locomotes'
+myPkgRootName='github.com/lesomnus/metro'
 myPkgPath=$myPkgRootName'/cmd/loco-metro'
-graper=$myPkgRootName'\|github\.\|google\.\|golang\.\|gopkg\.'
+imageRef='loco-metro:latest'
+graper='github\.\|google\.\|golang\.\|gopkg\.'
 
 #
 # DO NOT TOUCH
@@ -38,7 +39,7 @@ rsync -a $src_path/* $tmp_path/$myPkgPath
 cp $dckf_path $tmp_path/Dockerfile
 
 docker build \
-    -t loco-metro:latest \
+    -t $imageRef \
     $tmp_path
 
 rm -rf $tmp_path

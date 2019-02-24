@@ -7,8 +7,9 @@ import (
 	"strconv"
 
 	"app"
-	"locomotes/station/go/metro"
-	"locomotes/station/go/types"
+
+	"github.com/lesomnus/metro/station/go/metro"
+	"github.com/lesomnus/metro/station/go/types"
 
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"

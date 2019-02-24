@@ -3,9 +3,9 @@
 #
 # USER DEFINE VARIABLES
 #
-myPkgRootName='locomotes'
+myPkgRootName='github.com/lesomnus/metro'
 myPkgPath=$myPkgRootName'/station/go'
-imageRef=$myPkgRootName':latest'
+imageRef='loco-station-go1.11:latest'
 graper=$myPkgRootName'\|github\.\|google\.\|golang\.\|gopkg\.'
 
 #
@@ -42,7 +42,7 @@ rsync -a $src_path/* $tmp_path/$myPkgPath
 cp $dckf_path $tmp_path/Dockerfile
 
 docker build \
-    -t loco-station-go1.11:latest \
+    -t $imageRef \
     $tmp_path
 
 rm -rf $tmp_path

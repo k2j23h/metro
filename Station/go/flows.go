@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 
-	"locomotes/station/go/types"
+	"github.com/lesomnus/metro/station/go/types"
 )
 
 type stationBody struct {

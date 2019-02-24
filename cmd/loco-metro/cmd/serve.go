@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"locomotes/metro"
+	"github.com/lesomnus/metro"
 
 	"github.com/spf13/cobra"
 )

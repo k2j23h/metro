@@ -3,8 +3,8 @@ package main
 import (
 	"errors"
 
-	"locomotes/station/go/metro"
-	"locomotes/station/go/types"
+	"github.com/lesomnus/metro/station/go/metro"
+	"github.com/lesomnus/metro/station/go/types"
 )
 
 // SignalMsg holds message to be sent

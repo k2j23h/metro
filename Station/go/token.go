@@ -3,8 +3,9 @@ package main
 import (
 	"bufio"
 	"io/ioutil"
-	"locomotes/station/go/metro"
 	"strings"
+
+	"github.com/lesomnus/metro/station/go/metro"
 )
 
 var (

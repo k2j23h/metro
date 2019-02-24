@@ -3,9 +3,10 @@ package cmd
 import (
 	"context"
 	"errors"
-	"locomotes/cmd/metro/metro"
 	"strings"
 	"time"
+
+	"github.com/lesomnus/metro/cmd/metro/metro"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
